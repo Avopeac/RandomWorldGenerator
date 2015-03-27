@@ -1,0 +1,26 @@
+Installation for Visual Studio (I used 2008, on XP):
+
+You need the following:
+FreeGLUT: I used "freeglut-MSVC-2.8.0-1.mp.zip"
+GLEW: I used "glew-1.9.0-win32.zip".
+Visual Studio. I used 2008: "vcsetup.exe". (Online installer, downloads lots of stuff while installing.)
+
+
+This is what I did:
+
+1. Install Visual Studio with its installer.
+
+2. Put the glew and freeglut libraries (glew.lib, freeglut.lib etc) in C:\Program\Microsoft SDKs\Windows\v6.0A\Lib
+
+3. Put the header files (freeglut.h, glew.h, glut.h etc) in C:\Program\Microsoft SDKs\Windows\v6.0A\Include\gl.
+
+4. Put the dlls () either in the system or the project folder.
+
+Now you just might have what you need. Try opening "openGL3Example" with Visual Studio and run it.
+
+You will need to add glew #include and glewInit for my lab code for now, but you can model that after the example project.
+
+One more thing: Make sure you have a reasonably modern GPU (NVidia 8000 series or better or corresponding ATI/AMD), and not totally ancient drivers.
+
+
+/Ingemar

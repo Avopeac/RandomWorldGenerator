@@ -1,0 +1,1 @@
+To get the executable to work you need to include the contents of the "resources" folder into the executable directory.
