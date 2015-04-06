@@ -1,117 +1,56 @@
-﻿Build started 2015-03-27 13:22:24.
-     1>Project "E:\Torrents\lab4-1\RandomWorldGenerator\openGL3Example.vcxproj" on node 2 (build target(s)).
+﻿Build started 2015-04-05 22:36:56.
+     1>Project "E:\Code\RandomWorldGenerator\openGL3Example.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Creating "Debug\RandomWorldGenerator.unsuccessfulbuild" because "AlwaysCreate" was specified.
+         Touching "Debug\RandomWorldGenerator.unsuccessfulbuild".
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt src\GL_utilities.c src\loadobj.c src\LoadTGA.c src\RandomWorldGenerator.c src\VectorUtils3.c
-         VectorUtils3.c
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(148): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(157): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(213): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(215): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(217): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(227): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(229): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(231): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(241): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(243): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(245): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\vectorutils3.c(680): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt src\FirstPersonCamera.c src\RandomWorldGenerator.c
          RandomWorldGenerator.c
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(55): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(56): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(59): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(60): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(61): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(67): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(68): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(70): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(71): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(83): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(85): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(99): warning C4018: '>=' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(99): warning C4018: '>=' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(112): warning C4018: '>=' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(112): warning C4018: '>=' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(180): warning C4305: 'function' : truncation from 'double' to 'GLclampf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(180): warning C4305: 'function' : truncation from 'double' to 'GLclampf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(185): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(185): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(185): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(185): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(185): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(210): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(211): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(314): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(314): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(315): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(315): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(334): warning C4244: '+=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(338): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(342): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(346): warning C4244: '+=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(350): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(354): warning C4244: '+=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(358): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(362): warning C4244: '+=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(366): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(367): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(391): warning C4018: '>=' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\randomworldgenerator.c(399): warning C4018: '>=' : signed/unsigned mismatch
-         LoadTGA.c
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadtga.c(51): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadtga.c(94): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadtga.c(96): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadtga.c(163): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadtga.c(169): warning C4018: '>=' : signed/unsigned mismatch
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadtga.c(258): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-         loadobj.c
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(116): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(117): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(137): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(138): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(160): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(161): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(453): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(483): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(631): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(632): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(633): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(640): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(642): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(644): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(671): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(839): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(840): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\torrents\lab4-1\randomworldgenerator\src\loadobj.c(841): warning C4244: '-=' : conversion from 'double' to 'GLfloat', possible loss of data
-         GL_utilities.c
-     1>e:\torrents\lab4-1\randomworldgenerator\src\gl_utilities.c(16): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\gl_utilities.c(39): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>e:\torrents\lab4-1\randomworldgenerator\src\gl_utilities.c(58): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(56): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(57): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(60): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(61): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(62): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(70): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(71): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(74): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(75): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(113): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(114): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(155): warning C4305: 'function' : truncation from 'double' to 'GLclampf'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(155): warning C4305: 'function' : truncation from 'double' to 'GLclampf'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(217): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(217): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(270): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(271): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(273): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(273): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+         FirstPersonCamera.c
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(88): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(88): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(88): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(89): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(89): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(90): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(90): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(129): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(132): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
          Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Torrents\lab4-1\RandomWorldGenerator\Debug\RandomWorldGenerator.exe" /INCREMENTAL:NO /NOLOGO opengl32.lib glu32.lib gdi32.lib freeglut.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\RandomWorldGenerator.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Torrents\lab4-1\RandomWorldGenerator\Debug\RandomWorldGenerator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"E:\Torrents\lab4-1\RandomWorldGenerator\Debug\RandomWorldGenerator.lib" /MACHINE:X86 Debug\GL_utilities.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Code\RandomWorldGenerator\Debug\RandomWorldGenerator.exe" /INCREMENTAL:NO /NOLOGO opengl32.lib glu32.lib gdi32.lib freeglut.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\RandomWorldGenerator.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Code\RandomWorldGenerator\Debug\RandomWorldGenerator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"E:\Code\RandomWorldGenerator\Debug\RandomWorldGenerator.lib" /MACHINE:X86 Debug\FirstPersonCamera.obj
+         Debug\GL_utilities.obj
          Debug\loadobj.obj
          Debug\LoadTGA.obj
          Debug\RandomWorldGenerator.obj
          Debug\VectorUtils3.obj
-     1>GL_utilities.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+     1>FirstPersonCamera.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
      1>LINK : fatal error LNK1104: cannot open file 'freeglutd.lib'
-     1>Done Building Project "E:\Torrents\lab4-1\RandomWorldGenerator\openGL3Example.vcxproj" (build target(s)) -- FAILED.
+     1>Done Building Project "E:\Code\RandomWorldGenerator\openGL3Example.vcxproj" (build target(s)) -- FAILED.
 
 Build FAILED.
 
-Time Elapsed 00:00:00.80
+Time Elapsed 00:00:00.45

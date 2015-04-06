@@ -11,8 +11,6 @@
     #include <stdio.h>
     #include <stddef.h>
     #include <string.h>
-    
-	//#include <GL/gl.h>
 #endif
 
 char* readFile(char *file);

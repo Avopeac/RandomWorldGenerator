@@ -83,6 +83,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glu32.lib;gdi32.lib;freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -97,16 +98,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\FirstPersonCamera.c" />
     <ClCompile Include="src\GL_utilities.c" />
+    <ClCompile Include="src\HeightMapTerrain.c" />
     <ClCompile Include="src\loadobj.c" />
     <ClCompile Include="src\LoadTGA.c" />
     <ClCompile Include="src\RandomWorldGenerator.c" />
     <ClCompile Include="src\VectorUtils3.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FirstPersonCamera.h" />
     <ClInclude Include="src\GL_utilities.h" />
+    <ClInclude Include="src\HeightMapTerrain.h" />
     <ClInclude Include="src\loadobj.h" />
     <ClInclude Include="src\LoadTGA.h" />
+    <ClInclude Include="src\Resources.h" />
     <ClInclude Include="src\VectorUtils3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
