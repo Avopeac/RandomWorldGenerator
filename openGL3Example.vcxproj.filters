@@ -36,6 +36,9 @@
     <ClCompile Include="src\HeightMapTerrain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DayNightCycle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL_utilities.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DayNightCycle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

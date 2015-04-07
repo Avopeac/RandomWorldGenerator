@@ -14,6 +14,7 @@
 #include "FirstPersonCamera.h"
 #include "HeightMapTerrain.h"
 #include "Resources.h"
+#include "DayNightCycle.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -73,13 +74,8 @@ void display(void)
 
 	// Build matrix
 	camData = GetCameraData();
-	//camMatrix = lookAtv(camData.pos, camData.lookAt, camData.normal);
-
 	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
-
-	//Debug print
-	//PrintCameraData();
 
 	modelView = IdentityMatrix();
 	total = Mult(camMatrix, modelView);

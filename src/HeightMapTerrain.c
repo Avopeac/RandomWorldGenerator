@@ -29,9 +29,6 @@ void GenerateTerrain()
 	unsigned int triangleCount = (terrainTexture.width-1) * (terrainTexture.height-1) * 2;
 	unsigned int x, z;
 
-	//int idx, ti1, ti2, neighborX1, neighborX2, neighborZ1, neighborZ2;
-	//vec3 normal, vert0, vert1, vert2, vertNormal;
-
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *texCoordArray = (GLfloat *)malloc(sizeof(GLfloat) * 2 * vertexCount);
@@ -44,10 +41,6 @@ void GenerateTerrain()
 			vertexArray[(x + z * terrainTexture.width)*3 + 0] = x / terrainScale;
 			vertexArray[(x + z * terrainTexture.width)*3 + 1] = terrainTexture.imageData[(x + z * terrainTexture.width) * (terrainTexture.bpp/8)] / 100.0f;
 			vertexArray[(x + z * terrainTexture.width)*3 + 2] = z / terrainScale;
-
-			/*normalArray[(x + z * terrainTexture.width)*3 + 0] = 0.0;
-			normalArray[(x + z * terrainTexture.width)*3 + 1] = 1.0;
-			normalArray[(x + z * terrainTexture.width)*3 + 2] = 0.0;*/
 
 			texCoordArray[(x + z * terrainTexture.width)*2 + 0] = (GLfloat)x; // (float)x / tex->width;
 			texCoordArray[(x + z * terrainTexture.width)*2 + 1] = (GLfloat)z; // (float)z / tex->height;

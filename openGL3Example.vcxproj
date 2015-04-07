@@ -80,8 +80,7 @@
     <ClCompile>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>CompileAsC</CompileAs>
@@ -99,6 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DayNightCycle.c" />
     <ClCompile Include="src\FirstPersonCamera.c" />
     <ClCompile Include="src\GL_utilities.c" />
     <ClCompile Include="src\HeightMapTerrain.c" />
@@ -108,6 +108,7 @@
     <ClCompile Include="src\VectorUtils3.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DayNightCycle.h" />
     <ClInclude Include="src\FirstPersonCamera.h" />
     <ClInclude Include="src\GL_utilities.h" />
     <ClInclude Include="src\HeightMapTerrain.h" />
