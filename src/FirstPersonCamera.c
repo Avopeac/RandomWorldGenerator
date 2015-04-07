@@ -117,8 +117,11 @@ void KeyboardUpCallback(unsigned char key, int x, int y)
 void CameraMoveAround(float speed, float sensitivity, float deltaTime)
 {
 
-  mData.x += mData.dx * sensitivity * deltaTime;
-  mData.y += mData.dy * sensitivity * deltaTime;
+  float targetX = mData.x + mData.dx * sensitivity * deltaTime;
+  float targetY = mData.y + mData.dy * sensitivity * deltaTime;
+
+  mData.x += (targetX - mData.x) * 0.025f;
+  mData.y += (targetY - mData.y) * 0.100f;
 
   //Clamp y-axis rotation
   if (mData.y >= 0.9999f)
@@ -131,8 +134,8 @@ void CameraMoveAround(float speed, float sensitivity, float deltaTime)
       mData.y = -0.9999f;
     }
 
-  cData.rot.x = 2.0f * M_PI * mData.x;
-  cData.rot.y = M_PI / 2.0f * mData.y;
+  cData.rot.x = (GLfloat)(2.0f * M_PI * mData.x);
+  cData.rot.y = (GLfloat)(M_PI / 2.0f * mData.y);
 
   camDirectionRight = SetVector((GLfloat)(sin(cData.rot.x - M_PI / 2.0f)),
 	  0.0f,

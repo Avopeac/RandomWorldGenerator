@@ -79,7 +79,7 @@ void display(void)
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
 	//Debug print
-	PrintCameraData();
+	//PrintCameraData();
 
 	modelView = IdentityMatrix();
 	total = Mult(camMatrix, modelView);

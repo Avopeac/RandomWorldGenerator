@@ -1,48 +1,14 @@
-﻿Build started 2015-04-05 22:36:56.
+﻿Build started 2015-04-07 14:21:03.
      1>Project "E:\Code\RandomWorldGenerator\openGL3Example.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Touching "Debug\RandomWorldGenerator.unsuccessfulbuild".
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt src\FirstPersonCamera.c src\RandomWorldGenerator.c
-         RandomWorldGenerator.c
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(56): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(57): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(60): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(61): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(62): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(70): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(71): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(74): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(75): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(113): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(114): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(155): warning C4305: 'function' : truncation from 'double' to 'GLclampf'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(155): warning C4305: 'function' : truncation from 'double' to 'GLclampf'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(160): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(217): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(217): warning C4305: 'function' : truncation from 'double' to 'float'
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(270): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(271): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(273): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
-     1>e:\code\randomworldgenerator\src\randomworldgenerator.c(273): warning C4244: 'function' : conversion from 'GLfloat' to 'int', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt src\FirstPersonCamera.c
          FirstPersonCamera.c
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(88): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(88): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(88): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(89): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(89): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(90): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(90): warning C4244: 'function' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(129): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>e:\code\randomworldgenerator\src\firstpersoncamera.c(132): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Code\RandomWorldGenerator\Debug\RandomWorldGenerator.exe" /INCREMENTAL:NO /NOLOGO opengl32.lib glu32.lib gdi32.lib freeglut.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\RandomWorldGenerator.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Code\RandomWorldGenerator\Debug\RandomWorldGenerator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"E:\Code\RandomWorldGenerator\Debug\RandomWorldGenerator.lib" /MACHINE:X86 Debug\FirstPersonCamera.obj
          Debug\GL_utilities.obj
+         Debug\HeightMapTerrain.obj
          Debug\loadobj.obj
          Debug\LoadTGA.obj
          Debug\RandomWorldGenerator.obj
@@ -53,4 +19,4 @@
 
 Build FAILED.
 
-Time Elapsed 00:00:00.45
+Time Elapsed 00:00:00.20

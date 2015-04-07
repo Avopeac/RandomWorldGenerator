@@ -20,13 +20,10 @@ float GetTerrainScale();
 void SetHeightMapTextureData(char *file);
 
 //Creates the terrain from the set height map data and returns the model
-Model* GenerateTerrain();
+void GenerateTerrain();
 
 //Returns the most recent generated terrain
 Model* GetTerrainModel();
-
-//Calculates the face normal of a triangle
-vec3 CalculateTriangleNormal(vec3 p1, vec3 p2, vec3 p3);
 
 //Returns a new vector from a start index (useful instead of doing three calls to get a vertex)
 vec3 GetVectorFromStartIndex(int idx);
@@ -34,5 +31,5 @@ vec3 GetVectorFromStartIndex(int idx);
 //Get height at a certain point in the terrain (unscaled)
 float GetHeight(GLfloat x, GLfloat z);
 
-//Is the given point in the map? (unscaled)
-int IsInMap(int x, int z);
+//Is the given point outside the map? (unscaled)
+int IsOutsideMap(int x, int z);
