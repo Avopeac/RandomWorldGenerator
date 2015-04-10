@@ -5,8 +5,6 @@
 
 #define TERRAIN_FRAG_SHADER "shaders/terrain.frag"
 #define TERRAIN_VERT_SHADER "shaders/terrain.vert"
-#define PHONGPLONG_FRAG_SHADER "shaders/phongplong.frag"
-#define PHONGPLONG_VERT_SHADER "shaders/phongplong.vert"
 #define MINIMAL_FRAG_SHADER "shaders/minimal.frag"
 #define MINIMAL_VERT_SHADER "shaders/minimal.vert"
 #define SKY_FRAG_SHADER "shaders/sky.frag"
@@ -22,9 +20,11 @@
 #define HEAD_COLOR_PNG_TEXTURE "textures/headcolor.png"
 #define HEAD_COLOR_TGA_TEXTURE "textures/headcolor.tga"
 #define MASKROS_512_TEXTURE "textures/maskros512.tga"
-#define SKYBOX_512_TEXTURE "textures/SkyBox512.tga"
 
 //Model locations
 #define MODEL_FOLDER "models/"
+#define SKYDOME_MODEL "models/skydome.obj"
+#define SKYDOME_2_MODEL "models/skydome2.obj"
+
 
 

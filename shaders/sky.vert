@@ -1,32 +1,20 @@
 #version 150
 
-in  vec3 in_Position;
-in 	vec3 in_Normal;
-in vec2 in_TexCoord;
+in vec3 inPosition;
+in vec3 inNormal;
+in vec2 inTexCoord;
 
-
-out vec2 tex_Coord;
-out float t;
+out vec2 texCoord;
 out vec3 normal;
 out vec3 position;
 
-
-
-// NY
-
-uniform float time;
-uniform mat4 projection;
-uniform mat4 modelView;
-
+uniform mat4 projMatrix;
+uniform mat4 modelToWorld;
+uniform mat4 worldToView;
 
 void main(void)
 {
-	mat3 modelView3 = mat3(modelView);
-	normal = normalize(modelView3 * in_Normal);
-	position = modelView3 * in_Position;
-	//tex_Coord = in_TexCoord;
-	
-	gl_Position = projection * modelView * vec4(in_Position, 1.0);
-	t = time;
-	tex_Coord = in_TexCoord;
+	texCoord = inTexCoord;
+	position = vec3(modelToWorld * vec4(inPosition, 1));
+	gl_Position = projMatrix * mat4(mat3(worldToView)) * modelToWorld * vec4(inPosition,1.0);
 }

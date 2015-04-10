@@ -3,7 +3,7 @@
 
 //Standard settings
 #define MOUSE_SENSITIVITY 0.1f
-#define MOVE_SPEED 0.005f
+#define MOVE_SPEED 0.0025f
 #define CAMERA_HEIGHT 1.0f
 
 //Controls

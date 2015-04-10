@@ -20,7 +20,7 @@
 #define WINDOW_HEIGHT 768
 #define WINDOW_TITLE "Random World Generator"
 
-mat4 projectionMatrix;
+mat4 projectionMatrix, total, modelView, camMatrix;
 CameraData camData;
 
 // Reference to shader program
@@ -59,37 +59,45 @@ void init(void)
 	//Set up terrain model
 	SetHeightMapTextureData(TERRAIN_FFT_TEXTURE);
 	GenerateTerrain();
+
+	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
+	InitDayNightCycle(2015, 05, 30, 79200, 1000.0f,
+		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
+		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
+	
 }
 
 void display(void)
-{
-	mat4 total, modelView, camMatrix;
-	
+{	
 	// clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	printError("pre display");
-	
-	glUseProgram(program);
 
+	CameraMoveAround(MOVE_SPEED, MOUSE_SENSITIVITY, deltaTime);
+	SetCameraHeight(GetHeight(camData.pos.x * GetTerrainScale(),
+		camData.pos.z * GetTerrainScale()));
 
 	// Build matrix
 	camData = GetCameraData();
 	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
+	DrawDayNightCycle();
+
+	glUseProgram(program);
+	
 	modelView = IdentityMatrix();
 	total = Mult(camMatrix, modelView);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	
 	// Bind Our Texture tex1
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex1);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	DrawModel(GetTerrainModel(), program, "inPosition", "inNormal", "inTexCoord");
 
 	printError("display 2");
-
-	CameraMoveAround(MOVE_SPEED, MOUSE_SENSITIVITY, deltaTime);
-	SetCameraHeight(GetHeight(camData.pos.x * GetTerrainScale(),
-		camData.pos.z * GetTerrainScale()));
 	
 	glutSwapBuffers();
 }
