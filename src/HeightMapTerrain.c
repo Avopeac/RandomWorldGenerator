@@ -3,6 +3,7 @@
 #include "loadobj.h"
 #include "LoadTGA.h"
 #include "HeightMapTerrain.h"
+#include "Tilemap.h"
 
 //To get the 1-ring neighborhood of a point
 #define NEIGHBOR 6
@@ -13,6 +14,8 @@ int direction[NEIGHBOR][NEIGHBOR_DIR] =
 	{-1,0,0,-1}, {0,-1,1,-1}, {1,-1,1,0},
 };
 
+//Tilemap
+Tilemap* tilemap;
 //The terrain model
 Model* terrainModel;
 
@@ -29,17 +32,20 @@ void GenerateTerrain()
 	unsigned int triangleCount = (terrainTexture.width-1) * (terrainTexture.height-1) * 2;
 	unsigned int x, z;
 
+	
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *texCoordArray = (GLfloat *)malloc(sizeof(GLfloat) * 2 * vertexCount);
 	GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
-
+	
+	tilemap = Tilemap_New(terrainTexture.width);
+	generateTileMap(tilemap);
 	for (x = 0; x < terrainTexture.width; x++)
 	{
 		for (z = 0; z < terrainTexture.height; z++)
 		{
 			vertexArray[(x + z * terrainTexture.width)*3 + 0] = x / terrainScale;
-			vertexArray[(x + z * terrainTexture.width)*3 + 1] = terrainTexture.imageData[(x + z * terrainTexture.width) * (terrainTexture.bpp/8)] / 100.0f;
+			vertexArray[(x + z * terrainTexture.width)*3 + 1] = -tilemap->heights[(x + z * terrainTexture.width)]/15;
 			vertexArray[(x + z * terrainTexture.width)*3 + 2] = z / terrainScale;
 
 			texCoordArray[(x + z * terrainTexture.width)*2 + 0] = (GLfloat)x; // (float)x / tex->width;
@@ -126,6 +132,7 @@ void GenerateTerrain()
 			indexArray[(x + z * (terrainTexture.width-1))*6 + 5] = x + 1 + (z + 1) * terrainTexture.width;
 		}
 	}
+
 
 	// End of terrain generation
 	// Create Model and upload to GPU:
