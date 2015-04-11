@@ -15,8 +15,9 @@ typedef struct DistributionCoefficient
 	float a, b, c, d, e;
 } DistributionCoefficient;
 
-typedef struct SolarPosition
+typedef struct SolarData
 {
+	vec3 position;
 	float declinationAngle;
 	float azimuthAngle;
 	float zenithAngle;
@@ -26,12 +27,13 @@ typedef struct SolarPosition
 	float latitude;
 	float longitude;
 	float standardMeridian;
-} SolarPosition; 
+} SolarData; 
 
 void SetupDayNightCycle(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView, mat4 *projectionMatrix);
 void InitDayNightCycle(int year, int month, int day, int sec, float daySpeed, float latitude, float longitude, float GMT);
 void DrawDayNightCycle();
 
+SolarData GetSolarData();
 void UpdateSolarPosition(float hours);
 void UpdateDayTime(float deltaTime, float daySpeed);
 void SetTimeMeasures(int hours, int minutes, int seconds);
@@ -46,4 +48,4 @@ float CalcSolarZenithAngle(float latitude, float declination, float solarTime);
 float CalcSolarAzimuthAngle(float latitude, float declination, float solarTime);
 void CalcAbsoluteZenithValues(float turbidity, float zenithAngle);
 
-void PrintSolarPosition();
+void PrintSolarData();

@@ -15,7 +15,7 @@ uniform mat4 mdlMatrix;
 void main(void)
 {
 	mat3 normalMatrix1 = mat3(mdlMatrix);
-	fragNormal = normalize(normalMatrix1 *inNormal);
+	fragNormal = normalize(normalMatrix1 * inNormal);
 	fragVert = vec3(mdlMatrix * vec4(inPosition,1));
 	texCoord = inTexCoord;
 	gl_Position = projMatrix * mdlMatrix * vec4(inPosition, 1.0);

@@ -7,22 +7,24 @@ in vec3 fragVert;
 
 uniform sampler2D tex;
 uniform mat4 mdlMatrix;
+uniform vec3 solarPosition;
 
 void main(void)
 {
-	vec3 lightPosition = vec3(100, -50, 0);
+	vec3 lightPosition = normalize(mat3(mdlMatrix) * solarPosition);
 	vec3 lightColor = vec3(1,0.8,0.8);
 
 	vec3 normal = normalize(fragNormal);
-	vec3 surfacePos = fragVert;
+	vec3 surfacePos = normalize(fragVert);
 	vec4 surfaceColor = (texture(tex, texCoord));
 	
+	//setting this to zero, getting very view dependent lighting
+	surfacePos = vec3(0.0);
     vec3 surfaceToCamera = normalize(-surfacePos);
 	vec3 surfaceToLight = normalize(lightPosition - surfacePos);
-	surfaceToLight = mat3(mdlMatrix) * surfaceToLight; 
+	//surfaceToLight = mat3(mdlMatrix) * surfaceToLight; 
 	
-	
-	 //ambient
+	//ambient
     vec3 ambient = 0.2 * surfaceColor.rgb * vec3(1,1,1); // * surfaceColor;
 
     //diffuse
@@ -33,13 +35,11 @@ void main(void)
     float specularCoefficient = 0.0;
     if(diffuseCoefficient > 0.0)
 	{
-		//reflect(surfaceToLight, normal)
 		vec3 r = 2*normal*dot(surfaceToLight, normal) - surfaceToLight;
 		specularCoefficient = pow(max(0.0, dot(surfaceToCamera, r)), 10);
-   
 	}
 	
-         vec3 specular = vec3(0,0,0);//specularCoefficient * vec3(1,1,1) * lightColor;
+    vec3 specular = vec3(0,0,0); //specularCoefficient * vec3(1,1,1) * lightColor;
     
     
     //linear color (color before gamma correction)

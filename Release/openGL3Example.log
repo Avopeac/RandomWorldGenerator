@@ -1,4 +1,4 @@
-﻿Build started 2015-04-10 18:26:57.
+﻿Build started 2015-04-11 02:44:05.
      1>Project "E:\Code\RandomWorldGenerator\openGL3Example.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\RandomWorldGenerator.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -26,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.86
+Time Elapsed 00:00:00.83

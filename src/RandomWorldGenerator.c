@@ -22,6 +22,7 @@
 
 mat4 projectionMatrix, total, modelView, camMatrix;
 CameraData camData;
+SolarData sData;
 
 // Reference to shader program
 GLuint program;
@@ -61,7 +62,7 @@ void init(void)
 	GenerateTerrain();
 
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 05, 30, 79200, 1000.0f,
+	InitDayNightCycle(2015, 05, 30, 40000, 1000.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 	
@@ -89,6 +90,10 @@ void display(void)
 	modelView = IdentityMatrix();
 	total = Mult(camMatrix, modelView);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+
+	sData = GetSolarData();
+
+	glUniform3fv(glGetUniformLocation(program, "solarPosition"), 1, &(sData.position.x));
 	
 	// Bind Our Texture tex1
 	glActiveTexture(GL_TEXTURE0);

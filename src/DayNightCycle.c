@@ -21,7 +21,7 @@ float days = 0.0f;
 float speed = 0.0f;
 
 //Container for solar data
-SolarPosition solarPos;
+SolarData sData;
 
 //Turbidity is basically a fraction of light scattering based due to haze (molecules in the air).
 //Determines how clear the view is.
@@ -42,6 +42,12 @@ GLfloat *dt;
 mat4 *wv;
 mat4 *mw;
 mat4 *proj;
+
+
+SolarData GetSolarData()
+{
+	return sData;
+}
 
 void SetupDayNightCycle(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView, mat4 *projectionMatrix)
 {
@@ -70,15 +76,13 @@ void InitDayNightCycle(int year, int month, int day, int sec, float daySpeed, fl
 	seconds = (float) sec;
 	speed = daySpeed;
 
-	fprintf(stderr, "hello? %f\n", speed);
-
 	UpdateDayTime(*dt, speed);
 
-	solarPos.latitude = latitude;
-	solarPos.longitude = longitude;
-	solarPos.standardMeridian = CalcStandardMeridian(GMT);
-	solarPos.julianDay = (float) CalcJulianDay(year, month, day);
-	solarPos.declinationAngle = CalcSolarDeclination((int)solarPos.julianDay);
+	sData.latitude = latitude;
+	sData.longitude = longitude;
+	sData.standardMeridian = CalcStandardMeridian(GMT);
+	sData.julianDay = (float) CalcJulianDay(year, month, day);
+	sData.declinationAngle = CalcSolarDeclination((int)sData.julianDay);
 
 	//Using this call instead, less code
 	UpdateSolarPosition(hours);
@@ -96,8 +100,8 @@ void DrawDayNightCycle()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glUniform1f(glGetUniformLocation(skydomeProgram, "azimuth"), solarPos.azimuthAngle);
-	glUniform1f(glGetUniformLocation(skydomeProgram, "zenith"), solarPos.zenithAngle);
+	glUniform1f(glGetUniformLocation(skydomeProgram, "azimuth"), sData.azimuthAngle);
+	glUniform1f(glGetUniformLocation(skydomeProgram, "zenith"), sData.zenithAngle);
 	glUniform1f(glGetUniformLocation(skydomeProgram, "turbidity"), turbidity);
 	glUniform1f(glGetUniformLocation(skydomeProgram, "luminanceZ"), luminanceZ);
 	glUniform1f(glGetUniformLocation(skydomeProgram, "zenithX"), zenithX);
@@ -114,7 +118,7 @@ void DrawDayNightCycle()
 	UpdateDayTime(*dt, speed);
 	UpdateSolarPosition(hours);
 
-	CalcAbsoluteZenithValues(turbidity, solarPos.zenithAngle);
+	CalcAbsoluteZenithValues(turbidity, sData.zenithAngle);
 }
 
 int CalcJulianDay(int year, int month, int day)
@@ -129,8 +133,8 @@ int CalcJulianDay(int year, int month, int day)
 float CalcSolarTime(int julian, float hours, float longitude, float meridian)
 {
 	//Using the formula from the paper's appendix.
-	float a = (float)(0.170f * sin(4 * M_PI * (julian - 80) / 373));
-	float b = (float)(-0.129f * sin(2 * M_PI * (julian - 8) / 355));
+	float a = (float)(0.170f * sin(4 * M_PI * ((julian % 365 + 1) - 80) / 373));
+	float b = (float)(-0.129f * sin(2 * M_PI * ((julian % 365 + 1) - 8) / 355));
 	float c = (float)(12 * (meridian - longitude) / M_PI);
 
 	return hours + a + b + c;
@@ -139,7 +143,8 @@ float CalcSolarTime(int julian, float hours, float longitude, float meridian)
 float CalcSolarDeclination(int julian)
 {
 	//Due to the axial tilt of earth the sun rays have different angles to the equator depending on day.
-	return (float)(0.4093f * sin(2 * M_PI * (julian - 81) / 368));
+	//Note: This is negated from the formula in the paper, somehow it looks more realistic.
+	return (float)(-0.4093 * sin(2 * M_PI * ((julian % 365 + 1) - 81) / 368.0));
 }
 
 float CalcSolarZenithAngle(float latitude, float declination, float solarTime)
@@ -147,24 +152,31 @@ float CalcSolarZenithAngle(float latitude, float declination, float solarTime)
 	//Using the formula from the paper's appendix.
 	float a = (float)(sin(latitude) * sin(declination));
 	float b = (float)(cos(latitude) * cos(declination));
-	float c = (float)(cos(M_PI * solarTime / 12));
+	float c = (float)(cos(M_PI * solarTime / 12.0));
 
-	return (float)(M_PI / 2 - asin(a - b * c));
+	float angle = (float)(M_PI / 2.0 - asin(a - b * c));
+
+	if (angle <= 0.0f)
+		angle = (float)(-1.0 * angle + M_PI);
+
+ 	return angle;
 }
 
 float CalcSolarAzimuthAngle(float latitude, float declination, float solarTime)
 {
 	//Using the formula from the paper's appendix.
 	float a = (float)(-1 * cos(declination));
-	float b = (float)(sin(M_PI * solarTime / 12));
+	float b = (float)(sin(M_PI * solarTime / 12.0));
 	float c = (float)(cos(latitude) * sin(declination));
 	float d = (float)(sin(latitude) * cos(declination));
-	float e = (float)(cos(M_PI * solarTime / 12));
+	float e = (float)(cos(M_PI * solarTime / 12.0));
 
-	//Something wrong with the angles here because sun sets where it dawns.
-	return (float)(2.0 * atan(a * b / (c - d * e)));
+	float angle = (float)atan2(c - d * e, a * b);
 
-	return solarTime;
+	if (angle < 0.0f)
+		angle += (float)(2.0f * M_PI);
+
+	return angle;
 }
 
 float CalcStandardMeridian(float GMT)
@@ -187,9 +199,9 @@ void CalcAbsoluteZenithValues(float turbidity, float zenithAngle)
 	float y0 = (float)(a2 * tan(x * a1) + a3);
 
 	//Calculating powers to use later
-	GLfloat z = (GLfloat)(solarPos.zenithAngle);
-	GLfloat z2 = (GLfloat)(pow(solarPos.zenithAngle, 2));
-	GLfloat z3 = (GLfloat)(z2 * solarPos.zenithAngle);
+	GLfloat z = (GLfloat)(sData.zenithAngle);
+	GLfloat z2 = (GLfloat)(pow(sData.zenithAngle, 2));
+	GLfloat z3 = (GLfloat)(z2 * sData.zenithAngle);
 
 	vec3 turbidities;
 	vec3 zx;
@@ -235,35 +247,45 @@ void UpdateDayTime(float deltaTime, float daySpeed)
 		hours = 0.0f;
 
 		//After new julian day we need some recalculations.
-		solarPos.julianDay += 1;
-		solarPos.declinationAngle = CalcSolarDeclination((int)solarPos.julianDay);
+		sData.julianDay += 1;
+		sData.declinationAngle = CalcSolarDeclination((int)sData.julianDay);
 		UpdateSolarPosition(hours);
 	}
 }
 
 void UpdateSolarPosition(float hours)
 {
+	float x, y, z;
 	//Just counted hours in decimal form.
-	solarPos.localDecimalHours = hours;
+	sData.localDecimalHours = hours;
 
 	//Solar time is an estimate of the passage of time based on the suns position.
-	solarPos.solarTime = CalcSolarTime((int)solarPos.julianDay,
-		solarPos.localDecimalHours,
-		solarPos.longitude,
-		solarPos.standardMeridian);
+	sData.solarTime = CalcSolarTime((int)sData.julianDay,
+		sData.localDecimalHours,
+		sData.longitude,
+		sData.standardMeridian);
 
 	//The angle of the position of the sun mapped on the equator plane.
-	solarPos.azimuthAngle = CalcSolarAzimuthAngle(solarPos.latitude,
-		solarPos.declinationAngle,
-		solarPos.solarTime);
+	sData.azimuthAngle = CalcSolarAzimuthAngle(sData.latitude,
+		sData.declinationAngle,
+		sData.solarTime);
 
 	//The angle of the position of the sun from its highest point.
-	solarPos.zenithAngle = CalcSolarZenithAngle(solarPos.latitude,
-		solarPos.declinationAngle,
-		solarPos.solarTime);
+	sData.zenithAngle = CalcSolarZenithAngle(sData.latitude,
+		sData.declinationAngle,
+		sData.solarTime);
+
+
+	z = (float)(cos(sData.zenithAngle - M_PI / 2.0) * cos(sData.azimuthAngle + M_PI));
+	y = (float)(sin(sData.zenithAngle - M_PI / 2.0)); 
+	x = (float)(cos(sData.zenithAngle - M_PI / 2.0) * sin(sData.azimuthAngle + M_PI));
+
+	//fprintf(stderr, "calc x %f y %f z %f\n", x, y, z);
+
+	sData.position = SetVector(x, y, z);
 
 	//For debug.
-	PrintSolarPosition();
+	//PrintSolarData();
 }
 
 void SetDate(int year, int month, int day)
@@ -272,16 +294,17 @@ void SetDate(int year, int month, int day)
 	y = year; m = month; d = day;
 }
 
-void PrintSolarPosition()
+void PrintSolarData()
 {
 	//Converting most radians to degrees, easier to read.
-	fprintf(stderr, "Latitude: %f\n", solarPos.latitude * 180.0f / M_PI);
-	fprintf(stderr, "Longitude: %f\n", solarPos.longitude * 180.0f / M_PI);
-	fprintf(stderr, "Meridian: %f\n", solarPos.standardMeridian * 180.0f / M_PI);
-	fprintf(stderr, "Decimal Hours: %f\n", solarPos.localDecimalHours);
-	fprintf(stderr, "Solar Time: %f\n", solarPos.solarTime);
-	fprintf(stderr, "Julian Day: %f\n", solarPos.julianDay);
-	fprintf(stderr, "Declination Angle: %f\n", solarPos.declinationAngle * 180.0f / M_PI);
-	fprintf(stderr, "Zenith Angle: %f\n", solarPos.zenithAngle * 180.0f / M_PI);
-	fprintf(stderr, "Azimuth Angle: %f\n", solarPos.azimuthAngle * 180.0f / M_PI);
+	fprintf(stderr, "Position x y z: %f %f %f\n", sData.position.x, sData.position.y, sData.position.z);
+	fprintf(stderr, "Latitude: %f\n", sData.latitude * 180.0f / M_PI);
+	fprintf(stderr, "Longitude: %f\n", sData.longitude * 180.0f / M_PI);
+	fprintf(stderr, "Meridian: %f\n", sData.standardMeridian * 180.0f / M_PI);
+	fprintf(stderr, "Decimal Hours: %f\n", sData.localDecimalHours);
+	fprintf(stderr, "Solar Time: %f\n", sData.solarTime);
+	fprintf(stderr, "Julian Day: %f\n", sData.julianDay);
+	fprintf(stderr, "Declination Angle: %f\n", sData.declinationAngle * 180.0f / M_PI);
+	fprintf(stderr, "Zenith Angle: %f\n", sData.zenithAngle * 180.0f / M_PI);
+	fprintf(stderr, "Azimuth Angle: %f\n", sData.azimuthAngle * 180.0f / M_PI);
 }
