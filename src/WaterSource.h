@@ -15,8 +15,6 @@ typedef struct WaterSource
 	float time;
 } WaterSource;
 
-void SetSolarPosition(vec3 *position);
-
 void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, mat4 *projectionMatrix);
 
 WaterSource* GenerateWaterSource(vec3 p, //position
@@ -24,6 +22,7 @@ WaterSource* GenerateWaterSource(vec3 p, //position
 	float l1, float l2, float l3, //wavelength
 	float a1, float a2, float a3, //amplitude
 	float s1, float s2, float s3, //speed
-	vec3 d1, vec3 d2, vec3 d3); //directions
+	vec3 d1, vec3 d2, vec3 d3,
+	Model* terrainModel); //directions
 
-void DrawWaterSource(WaterSource *source);
+void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam);

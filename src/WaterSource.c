@@ -3,7 +3,6 @@
 #include "GL_utilities.h"
 #include "Resources.h"
 #include "LoadTGA.h"
-#include "FBOHelper.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -15,18 +14,10 @@ float t;
 mat4 *mw;
 mat4 *wv;
 mat4 *proj;
-vec3 *solarPosition;
 GLuint waterTex;
-
-
-float GetRandom()
-{
-	return (float)(256.0f - (rand() % 512)) / 256.0f;
-}
 
 void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, mat4 *projectionMatrix)
 {
-
 	dt = deltaTime;
 	mw = modelToWorld;
 	wv = worldToView;
@@ -39,19 +30,9 @@ void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, 
 	
 	glUniform1i(glGetUniformLocation(waterProgram, "tex"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(waterProgram, "projMatrix"), 1, GL_TRUE, proj->m);
-
-	//Use FBO's for texturing water
-	InitFBO();
-
-	srand(time(NULL));
 }
 
-void SetSolarPosition(vec3 *position)
-{
-	solarPosition = position;
-}
-
-WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float l1, float l2, float l3, float a1, float a2, float a3, float s1, float s2, float s3, vec3 d1, vec3 d2, vec3 d3)
+WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float l1, float l2, float l3, float a1, float a2, float a3, float s1, float s2, float s3, vec3 d1, vec3 d2, vec3 d3, Model* terrainModel)
 {
 	WaterSource* source;
 	Model* tempModel;
@@ -61,17 +42,30 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	unsigned int vertexCount = sx * sz;
 	unsigned int triangleCount = (sx - 1) * (sz - 1) * 2;
 	unsigned int x, z;
+	float depth;
 
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *texCoordArray = (GLfloat *)malloc(sizeof(GLfloat) * 2 * vertexCount);
 	GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
 
+	//Create a new watersource with the mesh
+	source = (WaterSource*)malloc(sizeof(WaterSource));
+
+	source->p = SetVector(0, p.y, 0);
+
 	for (x = 0; x < sx; ++x)
 		for (z = 0; z < sz; ++z)
 		{
+			if ((x + z * sx) * 3 < (unsigned int) terrainModel->numVertices)
+			{
+				depth = terrainModel->vertexArray[(x + z * sx) * 3 + 1];
+			} else {
+				depth = 100.0f;
+			}
+			
 			vertexArray[(x + z * sx)*3 + 0] = (GLfloat)x / tessFact;
-			vertexArray[(x + z * sx)*3 + 1] = 0;
+			vertexArray[(x + z * sx)*3 + 1] = (GLfloat) depth;
 			vertexArray[(x + z * sx)*3 + 2] = (GLfloat)z / tessFact;
 
 			texCoordArray[(x + z * sx)*2 + 0] = (GLfloat)x / tessFact;
@@ -109,16 +103,6 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 		triangleCount*3);
 
 
-	//Create a new watersource with the mesh
-	source = (WaterSource*)malloc(sizeof(WaterSource));
-
-	//Set center position
-	source->p = SetVector(
-		p.x - (sx - sx / 2.0f) / tessFact,
-		p.y,
-		p.z - (sz - sz / 2.0f) / tessFact
-		);
-
 	//Save handles to important data
 	source->water = tempModel;
 	source->sx = sx;
@@ -148,12 +132,9 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	return source;
 }
 
-void DrawWaterSource(WaterSource *source)
+void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam)
 {
 	mat4 tempModelWorld, tempWorldView;
-
-	//Add time
-	source->time += (*dt) / 1000.0f;
 
 	glUseProgram(waterProgram);
 
@@ -185,8 +166,13 @@ void DrawWaterSource(WaterSource *source)
 	glUniform1f(glGetUniformLocation(waterProgram, "s2"), source->s2);
 	glUniform1f(glGetUniformLocation(waterProgram, "s3"), source->s3);
 
-	glUniform3fv(glGetUniformLocation(waterProgram, "solarPosition"), 1, &(solarPosition->x));
-	glUniform1f(glGetUniformLocation(waterProgram, "time"), source->time);
-	DrawModel(source->water, waterProgram, "inPosition", "inNormal", "inTexCoord");
+	glUniform3fv(glGetUniformLocation(waterProgram, "solarPosition"), 1, &(sun.x));
+	glUniform1f(glGetUniformLocation(waterProgram, "solarAltitude"), sunAltitude);
+	glUniform3fv(glGetUniformLocation(waterProgram, "cameraPosition"), 1, &(cam.x));
 
+	//Add time
+	source->time += (*dt) / 1000.0f;
+	glUniform1f(glGetUniformLocation(waterProgram, "time"), source->time);
+
+	DrawModel(source->water, waterProgram, "inPosition", "inNormal", "inTexCoord");
 }

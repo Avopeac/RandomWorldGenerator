@@ -71,10 +71,11 @@ void init(void)
 	water = GenerateWaterSource(
 		SetVector(20, -6.5f, 20),
 		2400, 2400,
-		5.0f, 4.0f, 9.0f,
+		5.0f, 4.0f, 20.0f,
 		0.05f, 0.1f, 0.03f,
 		0.2f, -1.5f, 2.5f,
-		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1));
+		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1),
+		GetTerrainModel());
 
 	SetupWaterSources(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
 }
@@ -98,12 +99,14 @@ void display(void)
 
 	glUseProgram(program);
 	
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
 	modelView = IdentityMatrix();
 	total = Mult(camMatrix, modelView);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 
 	sData = GetSolarData();
-	SetSolarPosition(&(sData.position));
 	glUniform3fv(glGetUniformLocation(program, "solarPosition"), 1, &(sData.position.x));
 	
 	// Bind Our Texture tex1
@@ -113,7 +116,7 @@ void display(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	DrawModel(GetTerrainModel(), program, "inPosition", "inNormal", "inTexCoord");
 
-	DrawWaterSource(water);
+	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos);
 
 	printError("display 2");
 	

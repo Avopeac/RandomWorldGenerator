@@ -6,6 +6,8 @@ in vec2 inTexCoord;
 
 out vec3 position;
 out vec3 normal;
+out vec3 binormal;
+out vec3 tangent;
 out vec2 texCoord;
 
 uniform mat4 projMatrix;
@@ -19,42 +21,83 @@ uniform float s1, s2, s3;
 
 uniform float time;
 
-float freq(float wavelength)
-{
-	return sqrt(9.8 * 2.0 * 3.14159265358979323846 / wavelength);
+//Psuedo-random number from 0 to 0.99999...
+float rand(vec2 seed){
+    return fract(sin(dot(seed.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
+//Calculate the wave frequency W for some wavelength and terrain depth.
+//Depth is located in the y-coordinate of the plane mesh.
+//NOTE: May need some tweaking
+float freq(float wavelength, float depth)
+{
+	float k = 2.0 * 3.14159265358979323846 / wavelength;
+	return sqrt(9.8 * k * tanh(k * (1.0 - 1.0 / depth)));
+}
+
+//Calculate the phase shift of a wave for some speed and wavelength.
 float phase(float speed, float wavelength)
 {
 	return speed * 2.0 * 3.14159265358979323846 / wavelength;
 }
 
+//Calculate the wave curve steepness, high values may cause loops at top.
 float steepness(float frequency, float amplitude)
 {
 	return 1.0 / (frequency * amplitude * 3);
 }
 
+//Add some changes to the amplitude based on direction and time.
+//A = amplitude, a = scale, f = chance of high wave.
+float amplitude(float A, float a, float f)
+{
+	return A - a * sin(time + inPosition.x) * sin(inPosition.z * f);
+}
+
+//Add some random displacement to the starting height of each vertex.
+float displacement(float y, float b, float r)
+{
+	return y * b * sin(r * time);
+}
+
 void main(void)
 {	
 
-	const float PI = 3.14159265358979323846;
+	const float a1s = 0.04; const float a1f = 2.0;
+	const float a2s = 0.2; const float a2f = 0.5;
+	const float a3s = 0.01; const float a3f = 3.0;
 
-	//Wave dispersions
-	vec3 W = vec3(freq(l1), freq(l2), freq(l3));
+	const float hd = 0.0002;
+
+	//Wave dispersions with respect to depth to terrain (stored in y-coordinate)
+	vec3 W = vec3(freq(l1, inPosition.y),
+	 freq(l2, inPosition.y),
+	 freq(l3, inPosition.y));
 
 	//Wave phase
-	vec3 PHI = vec3(phase(s1, l1), phase(s2, l2), phase(s3, l3));
+	vec3 PHI = vec3(phase(s1, l1),
+	 phase(s2, l2),
+	  phase(s3, l3));
 
 	//Wave amplitude
-	vec3 A = vec3(a1, a2, a3);
+	vec3 A = vec3(amplitude(a1, a1s, a1f),
+	 amplitude(a2, a2s, a2f),
+	  amplitude(a3, a3s, a3f));
 
 	//Wave directions
 	mat3 D = mat3(d1, d2, d3);
 
 	//Wave steepness
-	vec3 Q = vec3(steepness(W[0], A[0]), steepness(W[1], A[1]), steepness(W[2], A[2]));
+	vec3 Q = vec3(steepness(W[0], A[0]),
+	 steepness(W[1], A[1]),
+	  steepness(W[2], A[2]));
 
-	vec3 P = vec3(inPosition.x, inPosition.y, inPosition.z);
+	//Wave height displacement
+	float y = displacement(inPosition.y,
+	 hd,
+	 rand(inPosition.xz));
+
+	vec3 P = vec3(inPosition.x, y, inPosition.z);
 	for (int i = 0; i < 3; i++)
 	{
 		P.x += Q[i] * A[i] * D[i].x * cos(W[i] * dot(D[i], P) + PHI[i] * time);
@@ -99,6 +142,9 @@ void main(void)
 	N.y = 1.0 - N.y;
 	
 	normal = vec3(N.x, -N.y, N.z);
+	binormal = vec3(B.x, -B.y, B.z);
+	tangent = vec3(T.x, -T.y, T.z);
+
 	position = P;
 	texCoord = inTexCoord;
 
