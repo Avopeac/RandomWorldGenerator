@@ -9,6 +9,8 @@
 #define MINIMAL_VERT_SHADER "shaders/minimal.vert"
 #define SKY_FRAG_SHADER "shaders/sky.frag"
 #define SKY_VERT_SHADER "shaders/sky.vert"
+#define WATER_FRAG_SHADER "shaders/water.frag"
+#define WATER_VERT_SHADER "shaders/water.vert"
 
 //Texture locations
 #define TEXTURE_FOLDER "textures/"
@@ -20,6 +22,7 @@
 #define HEAD_COLOR_PNG_TEXTURE "textures/headcolor.png"
 #define HEAD_COLOR_TGA_TEXTURE "textures/headcolor.tga"
 #define MASKROS_512_TEXTURE "textures/maskros512.tga"
+#define WATER_512_TEXTURE "textures/water.tga"
 
 //Model locations
 #define MODEL_FOLDER "models/"

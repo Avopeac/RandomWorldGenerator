@@ -15,6 +15,7 @@
 #include "HeightMapTerrain.h"
 #include "Resources.h"
 #include "DayNightCycle.h"
+#include "WaterSource.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -30,9 +31,10 @@ GLuint tex1, tex2;
 GLfloat elapsedTime;
 GLfloat deltaTime;
 
+WaterSource* water;
+
 void init(void)
 {
-	
 	//Set up controls
 	InitPassiveMotionFunc();
 	InitKeyboardFunc();
@@ -55,7 +57,7 @@ void init(void)
 	//Upload to GPU
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
-	LoadTGATextureSimple(MASKROS_512_TEXTURE, &tex1);
+	LoadTGATextureSimple(GRASS_1_TEXTURE, &tex1);
 
 	//Set up terrain model
 	SetHeightMapTextureData(TERRAIN_FFT_TEXTURE);
@@ -65,7 +67,16 @@ void init(void)
 	InitDayNightCycle(2015, 05, 30, 40000, 1000.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
-	
+
+	water = GenerateWaterSource(
+		SetVector(20, -6.5f, 20),
+		2400, 2400,
+		5.0f, 4.0f, 9.0f,
+		0.05f, 0.1f, 0.03f,
+		0.2f, -1.5f, 2.5f,
+		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1));
+
+	SetupWaterSources(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
 }
 
 void display(void)
@@ -92,7 +103,7 @@ void display(void)
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 
 	sData = GetSolarData();
-
+	SetSolarPosition(&(sData.position));
 	glUniform3fv(glGetUniformLocation(program, "solarPosition"), 1, &(sData.position.x));
 	
 	// Bind Our Texture tex1
@@ -101,6 +112,8 @@ void display(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	DrawModel(GetTerrainModel(), program, "inPosition", "inNormal", "inTexCoord");
+
+	DrawWaterSource(water);
 
 	printError("display 2");
 	

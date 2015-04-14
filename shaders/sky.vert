@@ -2,7 +2,6 @@
 
 in vec3 inPosition;
 in vec3 inNormal;
-in vec2 inTexCoord;
 
 out vec2 texCoord;
 out vec3 normal;
@@ -14,7 +13,6 @@ uniform mat4 worldToView;
 
 void main(void)
 {
-	texCoord = inTexCoord;
 	position = vec3(modelToWorld * vec4(inPosition, 1));
 	gl_Position = projMatrix * mat4(mat3(worldToView)) * modelToWorld * vec4(inPosition,1.0);
 }

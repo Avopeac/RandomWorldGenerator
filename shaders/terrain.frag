@@ -7,6 +7,8 @@ in vec3 fragVert;
 
 uniform sampler2D tex;
 uniform mat4 mdlMatrix;
+uniform mat4 modelToWorld;
+uniform mat4 worldToView;
 uniform vec3 solarPosition;
 
 void main(void)
