@@ -4,6 +4,7 @@
 #include "LoadTGA.h"
 #include "HeightMapTerrain.h"
 #include "Tilemap.h"
+#include "Resources.h"
 
 //To get the 1-ring neighborhood of a point
 #define NEIGHBOR 6
@@ -24,6 +25,54 @@ TextureData terrainTexture;
 
 //The scale to sample with
 float terrainScale = STANDARD_MAP_SCALE;
+
+float *dt;
+mat4* proj;
+mat4* mw;
+mat4* wv;
+
+GLuint terrainProgram;
+GLuint tex1;
+
+void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView, mat4 *projectionMatrix)
+{
+	dt = deltaTime;
+	mw = modelWorld;
+	wv = worldView;
+	proj = projectionMatrix;
+
+	terrainProgram = loadShaders(TERRAIN_VERT_SHADER, TERRAIN_FRAG_SHADER);
+
+	glUseProgram(terrainProgram);
+	printError("init shader");
+	
+	//Upload to GPU
+	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "projMatrix"), 1, GL_TRUE, proj->m);
+	glUniform1i(glGetUniformLocation(terrainProgram, "tex"), 0); // Texture unit 0
+	LoadTGATextureSimple(GRASS_1_TEXTURE, &tex1);
+}
+
+void DrawHeightMapTerrain(vec3 sun)
+{
+	mat4 total;
+
+	glUseProgram(terrainProgram);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	total = Mult(*wv, *mw);
+	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glUniform3fv(glGetUniformLocation(terrainProgram, "solarPosition"), 1, &(sun.x));
+	
+	// Bind Our Texture tex1
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex1);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTexCoord");
+
+}
 
 //Generates the terrain model based on scale and the set height map texture data
 void GenerateTerrain()
