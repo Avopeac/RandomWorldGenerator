@@ -19,6 +19,10 @@ float GetTerrainScale();
 //Set the height map to generate terrain from
 void SetHeightMapTextureData(char *file);
 
+void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView, mat4 *projectionMatrix);
+
+void DrawHeightMapTerrain(vec3 sun);
+
 //Creates the terrain from the set height map data and returns the model
 void GenerateTerrain();
 

@@ -2,7 +2,6 @@
 
 out vec4 out_Color;
 
-in vec2 texCoord;
 in vec3 normal;
 in vec3 position;
 
