@@ -43,12 +43,14 @@ void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView
 
 	terrainProgram = loadShaders(TERRAIN_VERT_SHADER, TERRAIN_FRAG_SHADER);
 
+
 	glUseProgram(terrainProgram);
 	printError("init shader");
 	
 	//Upload to GPU
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "projMatrix"), 1, GL_TRUE, proj->m);
 	glUniform1i(glGetUniformLocation(terrainProgram, "tex"), 0); // Texture unit 0
+
 	LoadTGATextureSimple(GRASS_1_TEXTURE, &tex1);
 }
 
@@ -71,6 +73,7 @@ void DrawHeightMapTerrain(vec3 sun)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTexCoord");
+
 
 }
 
