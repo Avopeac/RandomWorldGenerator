@@ -901,8 +901,8 @@ void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalV
 				glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, 0);
 				glEnableVertexAttribArray(loc);
 			}
-			else
-				fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", texCoordVariableName);
+			//else
+				//fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", texCoordVariableName);
 		}
 
 		glDrawElements(GL_TRIANGLES, m->numIndices, GL_UNSIGNED_INT, 0L);
@@ -924,8 +924,8 @@ void DrawWireframeModel(Model *m, GLuint program, char* vertexVariableName, char
 			glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 			glEnableVertexAttribArray(loc);
 		}
-		else
-			fprintf(stderr, "DrawWireframeModel warning: '%s' not found in shader!\n", vertexVariableName);
+		//else
+			//fprintf(stderr, "DrawWireframeModel warning: '%s' not found in shader!\n", vertexVariableName);
 		
 		if (normalVariableName!=NULL)
 		{
@@ -936,8 +936,8 @@ void DrawWireframeModel(Model *m, GLuint program, char* vertexVariableName, char
 				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 				glEnableVertexAttribArray(loc);
 			}
-			else
-				fprintf(stderr, "DrawWireframeModel warning: '%s' not found in shader!\n", normalVariableName);
+			//else
+				//fprintf(stderr, "DrawWireframeModel warning: '%s' not found in shader!\n", normalVariableName);
 		}
 	
 		// VBO for texture coordinate data NEW for 5b
@@ -950,8 +950,8 @@ void DrawWireframeModel(Model *m, GLuint program, char* vertexVariableName, char
 				glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, 0);
 				glEnableVertexAttribArray(loc);
 			}
-			else
-				fprintf(stderr, "DrawWireframeModel warning: '%s' not found in shader!\n", texCoordVariableName);
+			//else
+				//fprintf(stderr, "DrawWireframeModel warning: '%s' not found in shader!\n", texCoordVariableName);
 		}
 		glDrawElements(GL_LINE_STRIP, m->numIndices, GL_UNSIGNED_INT, 0L);
 	}

@@ -31,7 +31,7 @@ void GenerateTerrain()
 	unsigned int vertexCount = terrainTexture.width * terrainTexture.height;
 	unsigned int triangleCount = (terrainTexture.width-1) * (terrainTexture.height-1) * 2;
 	unsigned int x, z;
-
+	
 	
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
@@ -40,19 +40,23 @@ void GenerateTerrain()
 	
 	tilemap = Tilemap_New(terrainTexture.width);
 	generateTileMap(tilemap);
+	
+	
+	
 	for (x = 0; x < terrainTexture.width; x++)
 	{
 		for (z = 0; z < terrainTexture.height; z++)
 		{
 			vertexArray[(x + z * terrainTexture.width)*3 + 0] = x / terrainScale;
-			vertexArray[(x + z * terrainTexture.width)*3 + 1] = -tilemap->heights[(x + z * terrainTexture.width)]/15;
+			vertexArray[(x + z * terrainTexture.width)*3 + 1] = -getHeightWrapping(tilemap, x,z);
 			vertexArray[(x + z * terrainTexture.width)*3 + 2] = z / terrainScale;
 
 			texCoordArray[(x + z * terrainTexture.width)*2 + 0] = (GLfloat)x; // (float)x / tex->width;
 			texCoordArray[(x + z * terrainTexture.width)*2 + 1] = (GLfloat)z; // (float)z / tex->height;
+			
 		}
 	}
-
+	
 	for (x = 0; x < terrainTexture.width; x++)
 	{
 		for(z = 0; z < terrainTexture.height; z++)
