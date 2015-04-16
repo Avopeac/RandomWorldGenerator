@@ -43,12 +43,14 @@ void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView
 
 	terrainProgram = loadShaders(TERRAIN_VERT_SHADER, TERRAIN_FRAG_SHADER);
 
+
 	glUseProgram(terrainProgram);
 	printError("init shader");
 	
 	//Upload to GPU
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "projMatrix"), 1, GL_TRUE, proj->m);
 	glUniform1i(glGetUniformLocation(terrainProgram, "tex"), 0); // Texture unit 0
+
 	LoadTGATextureSimple(GRASS_1_TEXTURE, &tex1);
 }
 
@@ -72,6 +74,7 @@ void DrawHeightMapTerrain(vec3 sun)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTexCoord");
 
+
 }
 
 //Generates the terrain model based on scale and the set height map texture data
@@ -80,7 +83,7 @@ void GenerateTerrain()
 	unsigned int vertexCount = terrainTexture.width * terrainTexture.height;
 	unsigned int triangleCount = (terrainTexture.width-1) * (terrainTexture.height-1) * 2;
 	unsigned int x, z;
-
+	
 	
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
@@ -89,19 +92,23 @@ void GenerateTerrain()
 	
 	tilemap = Tilemap_New(terrainTexture.width);
 	generateTileMap(tilemap);
+	
+	
+	
 	for (x = 0; x < terrainTexture.width; x++)
 	{
 		for (z = 0; z < terrainTexture.height; z++)
 		{
 			vertexArray[(x + z * terrainTexture.width)*3 + 0] = x / terrainScale;
-			vertexArray[(x + z * terrainTexture.width)*3 + 1] = -tilemap->heights[(x + z * terrainTexture.width)]/15;
+			vertexArray[(x + z * terrainTexture.width)*3 + 1] = -getHeightWrapping(tilemap, x,z);
 			vertexArray[(x + z * terrainTexture.width)*3 + 2] = z / terrainScale;
 
 			texCoordArray[(x + z * terrainTexture.width)*2 + 0] = (GLfloat)x; // (float)x / tex->width;
 			texCoordArray[(x + z * terrainTexture.width)*2 + 1] = (GLfloat)z; // (float)z / tex->height;
+			
 		}
 	}
-
+	
 	for (x = 0; x < terrainTexture.width; x++)
 	{
 		for(z = 0; z < terrainTexture.height; z++)

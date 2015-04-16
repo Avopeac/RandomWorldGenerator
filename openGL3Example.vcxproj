@@ -107,6 +107,7 @@
     <ClCompile Include="src\RandomWorldGenerator.c" />
     <ClCompile Include="src\Tilemap.c" />
     <ClCompile Include="src\VectorUtils3.c" />
+    <ClCompile Include="src\WaterSource.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DayNightCycle.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="src\Resources.h" />
     <ClInclude Include="src\Tilemap.h" />
     <ClInclude Include="src\VectorUtils3.h" />
+    <ClInclude Include="src\WaterSource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
