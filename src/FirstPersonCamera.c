@@ -27,7 +27,7 @@ int controlBitmap[CONTROL_COUNT] = {0,0,0,0,0};
 //Set camera height 
 void SetCameraHeight(float height)
 {
-	cData.pos.y = height + CAMERA_HEIGHT;
+	cData.pos.y = height;
 }
 
 void SetCameraStartPosition(float x, float y, float z)

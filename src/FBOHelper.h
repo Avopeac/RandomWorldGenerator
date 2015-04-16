@@ -2,11 +2,8 @@
 
 typedef struct FBOData
 {
-	GLuint texId;
-	GLuint fb;
-	GLuint rb;
+	GLuint color, depth, fbo;
 	int width, height;
 } FBOData;
 
-void InitFBO(void);
-FBOData GetFBOData(void);
+FBOData* InitFBO(int width, int height);

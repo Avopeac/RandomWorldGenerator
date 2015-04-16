@@ -25,4 +25,4 @@ WaterSource* GenerateWaterSource(vec3 p, //position
 	vec3 d1, vec3 d2, vec3 d3,
 	Model* terrainModel); //directions
 
-void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam);
+void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam, GLuint reflection);

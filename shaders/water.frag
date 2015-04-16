@@ -8,9 +8,11 @@ in vec3 binormal;
 in vec3 tangent;
 in vec3 position;
 
+uniform sampler2D refl;
 uniform sampler2D tex;
 uniform mat4 modelToWorld;
 uniform mat4 worldToView;
+uniform mat4 projectionMatrix;
 uniform vec3 solarPosition;
 uniform float solarAltitude;
 
@@ -20,7 +22,7 @@ void main(void)
 	const float PI = 3.14159265358979323846;
 
 	vec3 lightPosition = mat3(worldToView) * mat3(modelToWorld) * solarPosition;
-	vec3 surfacePosition = vec3(mat4(worldToView) * mat4(modelToWorld) * vec4(position, 1));
+	vec3 surfacePosition = vec3(worldToView * modelToWorld * vec4(position, 1));
 
 	float alt = clamp(PI / 2 - solarAltitude, PI / 18, PI / 2);
 	vec4 lightColor = vec4(0.6, 0.8, 1.0, 1 * alt);
@@ -39,9 +41,12 @@ void main(void)
 	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
 
 	float ks = 2.0 * specularAngle;
-	float kd = 0.2 * diffuseAngle;;
+	float kd = 0.2 * diffuseAngle;
 
 	float transparency = 1.0 - 1.0 / exp(-surfacePosition.z * 0.3);
+
+	//vec3 test = normalize(vec3(worldToView * modelToWorld * vec4(position, 1)));
+	//vec4 ambientColor = texture(refl, vec2(0.5, 0.5) - vec2(test.x, test.y));
 
 	vec4 ambientColor = kd * texture(tex, texCoord);
 	vec4 diffuseColor = kd * lightColor * diffuseAngle;

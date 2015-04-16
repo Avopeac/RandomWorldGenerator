@@ -27,7 +27,7 @@ void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, 
 
 	waterProgram = loadShaders(WATER_VERT_SHADER, WATER_FRAG_SHADER);
 	glUseProgram(waterProgram);
-	
+	glUniform1i(glGetUniformLocation(waterProgram, "refl"), 0);
 	glUniform1i(glGetUniformLocation(waterProgram, "tex"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(waterProgram, "projMatrix"), 1, GL_TRUE, proj->m);
 }
@@ -132,11 +132,14 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	return source;
 }
 
-void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam)
+void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam, GLuint reflection)
 {
 	mat4 tempModelWorld, tempWorldView;
 
 	glUseProgram(waterProgram);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, reflection);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, waterTex);
@@ -144,7 +147,7 @@ void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	tempModelWorld = *mw;
-	tempWorldView = *wv;
+	tempWorldView = *wv; 
 
 	tempModelWorld = T(source->p.x, source->p.y, source->p.z);
 	glUniformMatrix4fv(glGetUniformLocation(waterProgram, "modelToWorld"), 1, GL_TRUE, tempModelWorld.m);

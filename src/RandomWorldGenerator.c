@@ -16,6 +16,7 @@
 #include "Resources.h"
 #include "DayNightCycle.h"
 #include "WaterSource.h"
+#include "FBOHelper.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -28,6 +29,9 @@ SolarData sData;
 GLfloat elapsedTime;
 GLfloat deltaTime;
 
+FBOData *rt;
+
+//This will be removed later and generated procedurally
 WaterSource* water;
 
 void init(void)
@@ -41,6 +45,9 @@ void init(void)
 	glClearColor(0.2f, 0.2f, 0.5f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+
+	rt = InitFBO(WINDOW_WIDTH, WINDOW_HEIGHT);
+
 	printError("GL inits");
 
 	modelView = IdentityMatrix();
@@ -53,15 +60,17 @@ void init(void)
 	SetHeightMapTextureData(TERRAIN_FFT_TEXTURE);
 	GenerateTerrain();
 
+	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 05, 30, 40000, 1000.0f,
+	InitDayNightCycle(2015, 05, 30, 70000, 1.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 
+	//Set up a water source
 	SetupWaterSources(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
 	water = GenerateWaterSource(
 		SetVector(20, -6.5f, 20),
-		2400, 2400,
+		240, 240,
 		5.0f, 4.0f, 20.0f,
 		0.05f, 0.1f, 0.03f,
 		0.2f, -1.5f, 2.5f,
@@ -77,20 +86,33 @@ void display(void)
 
 	CameraMoveAround(MOVE_SPEED, MOUSE_SENSITIVITY, deltaTime);
 	SetCameraHeight(GetHeight(camData.pos.x * GetTerrainScale(),
-		camData.pos.z * GetTerrainScale()));
+		camData.pos.z * GetTerrainScale()) + CAMERA_HEIGHT);
 
 	// Build matrix
 	camData = GetCameraData();
-	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
-		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
+	//camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
+	//	T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
 	sData = GetSolarData();
 
+	glBindFramebuffer(GL_FRAMEBUFFER, rt->fbo);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0,0,rt->width, rt->height);
+	glDisable(GL_TEXTURE_2D);
+	camMatrix = Mult(Mult(Rz(M_PI), Ry(camData.rot.x)),
+		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 	DrawDayNightCycle();
-
 	DrawHeightMapTerrain(sData.position);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos);
+	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
+		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
+
+	DrawDayNightCycle();
+	DrawHeightMapTerrain(sData.position);
+	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos, rt->color);
 
 	printError("display 2");
 	
@@ -110,7 +132,7 @@ void timer(int i)
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
 	//If using MicroGLUT?
 	//glutInitContextVersion(3, 2);
