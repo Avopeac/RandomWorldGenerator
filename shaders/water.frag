@@ -16,6 +16,11 @@ uniform mat4 projectionMatrix;
 uniform vec3 solarPosition;
 uniform float solarAltitude;
 
+float fresnel(float da, float bias, float power)
+{
+	return max(bias + (1.0 - bias) * pow(da, power), 0.0);
+}
+
 void main(void)
 {
 
@@ -45,12 +50,14 @@ void main(void)
 
 	float transparency = 1.0 - 1.0 / exp(-surfacePosition.z * 0.3);
 
-	//vec3 test = normalize(vec3(worldToView * modelToWorld * vec4(position, 1)));
-	//vec4 ambientColor = texture(refl, vec2(0.5, 0.5) - vec2(test.x, test.y));
+	vec4 screenPos = normalize(worldToView * modelToWorld * vec4(position, 1));
 
-	vec4 ambientColor = kd * texture(tex, texCoord);
+	float fresnelFac = fresnel(1.0 - diffuseAngle, 0.2, 5.0);
+	vec4 ambientColor = fresnelFac * texture(refl, vec2(0.5, 0.5) - vec2(screenPos.x + surfaceNormal.x * 0.03, -screenPos.y + surfaceNormal.y * 0.03));
+
+	vec4 texColor = kd * texture(tex, texCoord);
 	vec4 diffuseColor = kd * lightColor * diffuseAngle;
 	vec4 specularColor = ks * lightColor * pow(specularAngle, 50);
 
-	outColor = vec4(0.6 * alt, 0.8 * alt, 1.0 * alt, transparency) + ambientColor + diffuseColor + specularColor;
+	outColor = vec4(0.6 * alt, 0.8 * alt, 1.0 * alt, transparency) + texColor + ambientColor + diffuseColor + specularColor;
 }
