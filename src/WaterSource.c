@@ -68,8 +68,8 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 			vertexArray[(x + z * sx)*3 + 1] = (GLfloat) depth;
 			vertexArray[(x + z * sx)*3 + 2] = (GLfloat)z / tessFact;
 
-			texCoordArray[(x + z * sx)*2 + 0] = (GLfloat)x / tessFact;
-			texCoordArray[(x + z * sx)*2 + 1] = (GLfloat)z / tessFact;
+			texCoordArray[(x + z * sx)*2 + 0] = (GLfloat)x;
+			texCoordArray[(x + z * sx)*2 + 1] = (GLfloat)z;
 
 			normalArray[(x + z * sx)*3 + 0] = 0;
 			normalArray[(x + z * sx)*3 + 1] = 1;
