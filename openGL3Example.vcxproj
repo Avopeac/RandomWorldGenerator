@@ -98,7 +98,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Color.c" />
     <ClCompile Include="src\DayNightCycle.c" />
+    <ClCompile Include="src\FBOHelper.c" />
     <ClCompile Include="src\FirstPersonCamera.c" />
     <ClCompile Include="src\GL_utilities.c" />
     <ClCompile Include="src\HeightMapTerrain.c" />
@@ -110,7 +112,9 @@
     <ClCompile Include="src\WaterSource.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\DayNightCycle.h" />
+    <ClInclude Include="src\FBOHelper.h" />
     <ClInclude Include="src\FirstPersonCamera.h" />
     <ClInclude Include="src\GL_utilities.h" />
     <ClInclude Include="src\HeightMapTerrain.h" />

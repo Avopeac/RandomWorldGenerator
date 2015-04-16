@@ -9,18 +9,22 @@ Tilemap* Tilemap_New(int size)
 {
 	
 	double * heights = (double*)malloc(sizeof(double)*size*size);
-	int x,y;
+	int * colors = (int*)malloc(sizeof(int)*size*size);
+	int x,y, index;
 	Tilemap* tilemap;
 	for(x = 0; x < size; x++)
 	{
 		for(y = 0; y < size; y++)
 		{
-			heights[x + y*size] = 0;
+			index = x + y*size;
+			heights[index] = 0;
+			colors[index] = 0; 
 		}
 	}
 
 	tilemap = (Tilemap*)malloc(sizeof(Tilemap));
 	tilemap->heights = heights;
+	tilemap->colors = colors;
 	tilemap->size = size;
 
 	return tilemap;
@@ -38,16 +42,6 @@ void setHeightWrapping(Tilemap* tilemap, int x, int y, double height)
 	int xw = (x + tilemap->size)%tilemap->size;
 	int yw = (y + tilemap->size)%tilemap->size;
 	tilemap->heights[ xw +  yw*tilemap->size  ] = height;
-	/*if(x < 0 || x > tilemap->size - 1 || y < 0 || y > tilemap->size - 1)
-	{
-		fprintf(stderr, "Outside map: %d, %d\n", x,y);
-		return;
-	}
-	
-	tilemap->heights[x + y*tilemap->size] = height; 
-	
-	//fprintf(stderr, "Tile: %d,%d. Value: %.3f\n", x,y, height);
-	*/
 }
 
 double getHeight(Tilemap* tilemap, int x, int y)
@@ -61,18 +55,22 @@ double getHeightWrapping(Tilemap* tilemap, int x, int y)
 	int xw = (x + tilemap->size)%tilemap->size;
 	int yw = (y + tilemap->size)%tilemap->size;
 	double ret = tilemap->heights[ xw +  yw*tilemap->size  ]; 
-	/*
-	if(x < 0 || x > tilemap->size - 1 || y < 0 || y > tilemap->size - 1)
-	{
-		fprintf(stderr, "Tile: %d,%d. New Tile: %d,%d\n", x,y,xw,yw);
+	return ret; 	
+}
 
-//		fprintf(stderr, "Outside map: %d, %d\n", x,y);
-	}
-	*/
-	return ret; 
-	
-	//return tilemap->heights[x + y * tilemap->size];
-	
+void setColorWrapping(Tilemap * tilemap, int x, int y, int color)
+{
+	int xw = (x + tilemap->size)%tilemap->size;
+	int yw = (y + tilemap->size)%tilemap->size;
+	tilemap->colors[ xw +  yw*tilemap->size  ] = color;
+
+}
+
+int getColorWrapping(Tilemap * tilemap, int x, int y)
+{
+	int xw = (x + tilemap->size)%tilemap->size;
+	int yw = (y + tilemap->size)%tilemap->size;
+	return tilemap->colors[ xw +  yw*tilemap->size  ];
 }
 
 
@@ -109,6 +107,7 @@ void generateTileMap( Tilemap*  tilemap)
         divide(tilemap, end, end/2, 1, -12, 12);
 		smoothMap(tilemap, 4,8);
 		smoothMap(tilemap, 1,1);
+		setTilemapColors(tilemap);
 
 }
 
@@ -187,6 +186,32 @@ double average(double* values, int n)
 		return total/div;
 	}
 	return 0;
+}
+
+void setTilemapColors(Tilemap* tilemap)
+{
+	int x,y;
+	double height;
+	int color;
+	for(x = 0; x < tilemap->size; x++)
+	{
+		for(y = 0; y < tilemap->size; y++)
+		{
+			height = getHeightWrapping(tilemap,x,y);
+			if(height > 6.5f)
+			{
+				setColorWrapping(tilemap, x,y, SAND);
+			}
+			else if(height > 3 )
+			{
+				setColorWrapping(tilemap, x,y,GRASS);
+			}
+			else
+			{
+				setColorWrapping(tilemap, x, y, ROCK);
+			}
+		}
+	}
 }
 
 double clamp(double value, int min, int max)

@@ -5,6 +5,7 @@
 #include "HeightMapTerrain.h"
 #include "Tilemap.h"
 #include "Resources.h"
+#include "Color.h"
 
 //To get the 1-ring neighborhood of a point
 #define NEIGHBOR 6
@@ -32,7 +33,9 @@ mat4* mw;
 mat4* wv;
 
 GLuint terrainProgram;
-GLuint tex1;
+GLuint grass;
+GLuint sand;
+GLuint rock;
 
 void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView, mat4 *projectionMatrix)
 {
@@ -49,9 +52,13 @@ void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView
 	
 	//Upload to GPU
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "projMatrix"), 1, GL_TRUE, proj->m);
-	glUniform1i(glGetUniformLocation(terrainProgram, "tex"), 0); // Texture unit 0
+	glUniform1i(glGetUniformLocation(terrainProgram, "grass"), 0); // Texture unit 0
+	glUniform1i(glGetUniformLocation(terrainProgram, "sand"), 1); // Texture unit 1
+	glUniform1i(glGetUniformLocation(terrainProgram, "rock"), 2); // Texture unit 2
 
-	LoadTGATextureSimple(GRASS_1_TEXTURE, &tex1);
+	LoadTGATextureSimple(GRASS_1_TEXTURE, &grass);
+	LoadTGATextureSimple(SAND_1_TEXTURE, &sand);
+	LoadTGATextureSimple(ROCK_1_TEXTURE, &rock);
 }
 
 void DrawHeightMapTerrain(vec3 sun)
@@ -67,12 +74,25 @@ void DrawHeightMapTerrain(vec3 sun)
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glUniform3fv(glGetUniformLocation(terrainProgram, "solarPosition"), 1, &(sun.x));
 	
-	// Bind Our Texture tex1
+	// Bind Our Texture grass
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex1);		
+	glBindTexture(GL_TEXTURE_2D, grass);		
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTexCoord");
+	
+	// Bind Our Texture sand
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, sand);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	// Bind Our Texture grass
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, rock);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTexCoord", "inColor");
 
 
 }
@@ -83,11 +103,20 @@ void GenerateTerrain()
 	unsigned int vertexCount = terrainTexture.width * terrainTexture.height;
 	unsigned int triangleCount = (terrainTexture.width-1) * (terrainTexture.height-1) * 2;
 	unsigned int x, z;
+
+	Color* tempColor = Color_New(0,0,0);
+	const Color* colorGrass = Color_New(1,0,0);
+	const Color* colorSand = Color_New(0,1,0);
+	const Color* colorRock = Color_New(0,0,1);
+
 	
-	
+	int xplus,xminus,yplus,yminus;
+	int colorCount;
+
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *texCoordArray = (GLfloat *)malloc(sizeof(GLfloat) * 2 * vertexCount);
+	GLfloat *colorArray = (GLfloat *)malloc(sizeof(GLfloat)*3 * vertexCount);
 	GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
 	
 	tilemap = Tilemap_New(terrainTexture.width);
@@ -105,7 +134,35 @@ void GenerateTerrain()
 
 			texCoordArray[(x + z * terrainTexture.width)*2 + 0] = (GLfloat)x; // (float)x / tex->width;
 			texCoordArray[(x + z * terrainTexture.width)*2 + 1] = (GLfloat)z; // (float)z / tex->height;
+
 			
+			xplus = x;
+			xminus = x-1;
+			yplus = z;
+			yminus = z-1;
+				
+			tempColor = getColor(getColorWrapping(tilemap, xplus, yplus));
+			colorCount = 1;
+			if(xminus >= 0 && yminus >= 0) 
+			{
+				tempColor = addColor(tempColor, getColor(getColorWrapping(tilemap, xminus, yminus)));
+				colorCount++;
+			}
+			if(xminus >= 0)
+			{
+				tempColor = addColor(tempColor, getColor(getColorWrapping(tilemap, xminus, yplus)));
+				colorCount++;
+			}
+			if(yminus >= 0)
+			{				
+				tempColor = addColor(tempColor, getColor(getColorWrapping(tilemap, xplus, yminus)));
+				colorCount++;
+			}
+			tempColor = divColor(tempColor, colorCount);
+			colorArray[(x + z * terrainTexture.width)*3 + 0] = tempColor->r;
+			colorArray[(x + z * terrainTexture.width)*3 + 1] = tempColor->g;
+			colorArray[(x + z * terrainTexture.width)*3 + 2] = tempColor->b;
+
 		}
 	}
 	
@@ -196,7 +253,7 @@ void GenerateTerrain()
 		vertexArray,
 		normalArray,
 		texCoordArray,
-		NULL,
+		colorArray,
 		indexArray,
 		vertexCount,
 		triangleCount*3);

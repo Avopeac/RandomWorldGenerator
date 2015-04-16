@@ -177,5 +177,5 @@ void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam,
 	source->time += (*dt) / 1000.0f;
 	glUniform1f(glGetUniformLocation(waterProgram, "time"), source->time);
 
-	DrawModel(source->water, waterProgram, "inPosition", "inNormal", "inTexCoord");
+	DrawModel(source->water, waterProgram, "inPosition", "inNormal", "inTexCoord", NULL);
 }
