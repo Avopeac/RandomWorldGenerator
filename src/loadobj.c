@@ -859,7 +859,8 @@ void ScaleModel(Model *m, float sx, float sy, float sz)
 // and to get attribute locations. This is clearly not optimal, but the
 // goal is stability.
 
-void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName)
+void DrawModel(Model *m, GLuint program, char* vertexVariableName, 
+	char* normalVariableName, char* texCoordVariableName, char* colorVariableName)
 {
 	if (m != NULL)
 	{
@@ -903,6 +904,18 @@ void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalV
 			}
 			//else
 				//fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", texCoordVariableName);
+		}
+
+		// VBO for texture coordinate data NEW for 5b
+		if ((m->colorArray != NULL)&&(colorVariableName != NULL))
+		{
+			loc = glGetAttribLocation(program, colorVariableName);
+			if (loc >= 0)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, m->cb);
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+				glEnableVertexAttribArray(loc);
+			}
 		}
 
 		glDrawElements(GL_TRIANGLES, m->numIndices, GL_UNSIGNED_INT, 0L);
@@ -969,7 +982,8 @@ void BuildModelVAO2(Model *m/*,
 	glGenBuffers(1, &m->nb);
 	if (m->texCoordArray != NULL)
 		glGenBuffers(1, &m->tb);
-	
+	if(m->colorArray != NULL)
+		glGenBuffers(1, &m->cb);
 	glBindVertexArray(m->vao);
 	
 	// VBO for vertex data
@@ -993,6 +1007,13 @@ void BuildModelVAO2(Model *m/*,
 		//glEnableVertexAttribArray(glGetAttribLocation(program, texCoordVariableName));
 	}
 	
+	if (m->colorArray != NULL)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m->cb);
+		glBufferData(GL_ARRAY_BUFFER, m->numVertices*3*sizeof(GLfloat), m->colorArray, GL_STATIC_DRAW);
+		//glVertexAttribPointer(glGetAttribLocation(program, texCoordVariableName), 2, GL_FLOAT, GL_FALSE, 0, 0);
+		//glEnableVertexAttribArray(glGetAttribLocation(program, texCoordVariableName));
+	}
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->ib);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m->numIndices*sizeof(GLuint), m->indexArray, GL_STATIC_DRAW);
 }
@@ -1031,6 +1052,7 @@ Model* LoadDataToModel(
 	m->indexArray = indices;
 	m->numVertices = numVert;
 	m->numIndices = numInd;
+	m->colorArray = colors;
 	
 	BuildModelVAO2(m);
 	

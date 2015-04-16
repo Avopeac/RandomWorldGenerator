@@ -4,8 +4,11 @@ out vec4 finalColor;
 in vec2 texCoord;
 in vec3 fragNormal;
 in vec3 fragVert;
+in vec3 fragColor;
 
-uniform sampler2D tex;
+uniform sampler2D grass;
+uniform sampler2D sand;
+uniform sampler2D rock;
 uniform mat4 mdlMatrix;
 uniform mat4 modelToWorld;
 uniform mat4 worldToView;
@@ -18,8 +21,10 @@ void main(void)
 
 	vec3 normal = normalize(fragNormal);
 	vec3 surfacePos = normalize(fragVert);
-	vec4 surfaceColor = (texture(tex, texCoord));
-	
+	vec4 surfaceColor = (texture(grass, texCoord))*fragColor.r;
+	surfaceColor += (texture(sand, texCoord))*fragColor.g;
+	surfaceColor += (texture(rock, texCoord))*fragColor.b;
+
 	//setting this to zero, getting very view dependent lighting
 	surfacePos = vec3(0.0);
     vec3 surfaceToCamera = normalize(-surfacePos);

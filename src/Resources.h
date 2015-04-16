@@ -18,6 +18,8 @@
 #define TERRAIN_44_TEXTURE "textures/44-terrain.tga"
 #define TERRAIN_FFT_TEXTURE "textures/fft-terrain.tga"
 #define GRASS_1_TEXTURE "textures/grass.tga"
+#define SAND_1_TEXTURE "textures/sand.tga"
+#define ROCK_1_TEXTURE "textures/rock.tga"
 #define GRASS_2_TEXTURE "textures/Grasstex.tga"
 #define HEAD_COLOR_PNG_TEXTURE "textures/headcolor.png"
 #define HEAD_COLOR_TGA_TEXTURE "textures/headcolor.tga"

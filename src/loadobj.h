@@ -24,14 +24,14 @@ typedef struct
   
   // Space for saving VBO and VAO IDs
   GLuint vao; // VAO
-  GLuint vb, ib, nb, tb; // VBOs
+  GLuint vb, ib, nb, tb,cb; // VBOs
 } Model;
 
 Model* LoadModel(char* name);
 
 // NEW:
 
-void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName);
+void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName, char* colorVariableName);
 void DrawWireframeModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName);
 
 Model* LoadModelPlus(char* name/*,
