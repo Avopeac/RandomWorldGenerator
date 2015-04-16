@@ -8,6 +8,8 @@ in vec3 binormal;
 in vec3 tangent;
 in vec3 position;
 
+in float depth;
+
 uniform sampler2D refl;
 uniform sampler2D tex;
 uniform mat4 modelToWorld;
@@ -48,7 +50,7 @@ void main(void)
 	float ks = 2.0 * specularAngle;
 	float kd = 0.2 * diffuseAngle;
 
-	float transparency = 1.0 - 1.0 / exp(-surfacePosition.z * 0.3);
+	float transparency = max(1.0 - (1.0 / exp(-surfacePosition.z * 0.3)), 0.0);
 
 	vec4 screenPos = normalize(worldToView * modelToWorld * vec4(position, 1));
 

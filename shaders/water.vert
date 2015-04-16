@@ -10,6 +10,8 @@ out vec3 binormal;
 out vec3 tangent;
 out vec2 texCoord;
 
+out float depth;
+
 uniform mat4 projMatrix;
 uniform mat4 modelToWorld;
 uniform mat4 worldToView;
@@ -145,6 +147,7 @@ void main(void)
 	binormal = vec3(B.x, -B.y, B.z);
 	tangent = vec3(T.x, -T.y, T.z);
 
+	depth = inPosition.y;
 	position = P;
 	texCoord = inTexCoord;
 
