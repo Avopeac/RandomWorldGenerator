@@ -62,7 +62,7 @@ void init(void)
 
 	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 05, 30, 70000, 1.0f,
+	InitDayNightCycle(2015, 05, 30, 70000, 100.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 
@@ -101,8 +101,12 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0,0,rt->width, rt->height);
 	glDisable(GL_TEXTURE_2D);
-	camMatrix = Mult(Mult(Rz(M_PI), Ry(camData.rot.x)),
+
+	//Rotate in opposite directions to keep reflections somewhat static
+	camMatrix = Mult(Mult(Rx(-camData.rot.y),Mult(Rz(M_PI), Ry(camData.rot.x))),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
+
+
 	DrawDayNightCycle();
 	DrawHeightMapTerrain(sData.position);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
