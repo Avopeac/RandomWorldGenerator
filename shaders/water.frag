@@ -44,7 +44,10 @@ void main(void)
 	vec3 reflectVector = normalize(2 * surfaceNormal * dot(surfaceVector, surfaceNormal) - surfaceVector);
 	vec3 cameraVector = normalize(-surfacePosition);
 
-	float diffuseAngle = max(0.0, dot(surfaceNormal, surfaceVector));
+	vec3 refrNormal = surfaceNormal * vec3(0.075, 0.075, 1.0);
+	vec3 reflNormal = surfaceNormal * vec3(0.02, 0.02, 1.0);
+
+	float diffuseAngle = max(0.0, dot(refrNormal, surfaceVector));
 	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
 
 	float ks = 2.0 * specularAngle;
@@ -54,12 +57,15 @@ void main(void)
 
 	vec4 screenPos = normalize(worldToView * modelToWorld * vec4(position, 1));
 
-	float fresnelFac = fresnel(1.0 - diffuseAngle, 0.2, 5.0);
-	vec4 ambientColor = fresnelFac * texture(refl, vec2(0.5, 0.5) - vec2(screenPos.x + surfaceNormal.x * 0.03, -screenPos.y + surfaceNormal.y * 0.03));
+	float fresnelFac = fresnel(1.0 - diffuseAngle, 0.2, 1.5);
+	vec4 reflectionColor = fresnelFac * texture(refl, vec2(0.5, 0.5) - vec2(screenPos.x + reflNormal.x, -screenPos.y + reflNormal.y));
 
 	vec4 texColor = kd * texture(tex, texCoord);
+
 	vec4 diffuseColor = kd * lightColor * diffuseAngle;
+	diffuseColor.xyz = clamp(0.1 - diffuseColor.rgb * 0.9, 0, 1);
 	vec4 specularColor = ks * lightColor * pow(specularAngle, 50);
 
-	outColor = vec4(0.6 * alt, 0.8 * alt, 1.0 * alt, transparency) + texColor + ambientColor + diffuseColor + specularColor;
+	vec4 waterColor = (1.0 - fresnelFac) * vec4(0.6 * alt, 0.8 * alt, 1.0 * alt, transparency);
+	outColor = waterColor + texColor + reflectionColor + diffuseColor + specularColor;
 }
