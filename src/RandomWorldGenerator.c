@@ -62,7 +62,7 @@ void init(void)
 
 	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 05, 30, 70000, 1000.0f,
+	InitDayNightCycle(2015, 05, 30, 36000, 1000.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 
@@ -72,7 +72,7 @@ void init(void)
 		SetVector(20, -6.5f, 20),
 		240, 240,
 		5.0f, 4.0f, 20.0f,
-		0.05f, 0.1f, 0.03f,
+		0.05f, 0.02f, 0.03f,
 		0.2f, -1.5f, 2.5f,
 		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1),
 		GetTerrainModel());

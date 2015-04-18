@@ -28,44 +28,56 @@ void main(void)
 
 	const float PI = 3.14159265358979323846;
 
-	vec3 lightPosition = mat3(worldToView) * mat3(modelToWorld) * solarPosition;
+	mat3 MWIT = transpose(inverse(mat3(modelToWorld)));
+	mat3 MW3 = mat3(modelToWorld);
+	mat3 WV3 = mat3(worldToView);
+	mat3 NM = WV3 * MWIT;
+
+	vec3 lightPosition = vec3(worldToView * modelToWorld * vec4(solarPosition, 1));
 	vec3 surfacePosition = vec3(worldToView * modelToWorld * vec4(position, 1));
 
-	float alt = clamp(PI / 2 - solarAltitude, PI / 18, PI / 2);
-	vec4 lightColor = vec4(0.6, 0.8, 1.0, 1 * alt);
+	vec3 surfaceNormal = normalize(NM * normal);
+	vec3 surfaceBinormal = normalize(NM * binormal);
+	vec3 surfaceTangent = normalize(NM * tangent);
+	mat3 TBN = mat3(surfaceTangent, surfaceBinormal, surfaceNormal);
 
-	mat3 normalMatrix = mat3(worldToView) * transpose(inverse(mat3(modelToWorld)));
-
-	vec3 surfaceNormal = normalize(normalMatrix * normal);
-	//vec3 surfaceBinormal = normalize(normalMatrix * binormal);
-	//vec3 surfaceTangent = normalize(normalMatrix * tangent);
+	vec3 bumpNormal = texture(tex, texCoord / 10.0).xyz;
+	bumpNormal = 2.0 * bumpNormal - vec3(1,1,1);
+	bumpNormal = TBN * bumpNormal;
 
 	vec3 surfaceVector = normalize(lightPosition - surfacePosition);
-	vec3 reflectVector = normalize(2 * surfaceNormal * dot(surfaceVector, surfaceNormal) - surfaceVector);
+	vec3 reflectVector = normalize(2 * bumpNormal * dot(surfaceVector, bumpNormal) - surfaceVector);
 	vec3 cameraVector = normalize(-surfacePosition);
 
-	vec3 refrNormal = surfaceNormal * vec3(0.075, 0.075, 1.0);
-	vec3 reflNormal = surfaceNormal * vec3(0.02, 0.02, 1.0);
-
-	float diffuseAngle = max(0.0, dot(refrNormal, surfaceVector));
-	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
-
-	float ks = 2.0 * specularAngle;
-	float kd = 0.2 * diffuseAngle;
-
-	float transparency = max(1.0 - (1.0 / exp(-surfacePosition.z * 0.3)), 0.0);
+	vec3 refrNormal = bumpNormal * vec3(0.075, 0.075, 1.0);
+	vec3 reflNormal = bumpNormal * vec3(0.02, 0.02, 1.0);
 
 	vec4 screenPos = normalize(worldToView * modelToWorld * vec4(position, 1));
+	vec2 projUV = vec2(0.5, 0.5) - vec2(screenPos.x, -screenPos.y);
+	vec4 reflection = texture(refl, projUV + reflNormal.xy); 
 
-	float fresnelFac = fresnel(1.0 - diffuseAngle, 0.2, 1.5);
-	vec4 reflectionColor = fresnelFac * texture(refl, vec2(0.5, 0.5) - vec2(screenPos.x + reflNormal.x, -screenPos.y + reflNormal.y));
+	vec4 refractionA = texture(refl, projUV + refrNormal.xy);
+	vec4 refractionB = texture(refl, projUV);
 
-	vec4 texColor = kd * texture(tex, texCoord);
+	float ndotl = max(dot(cameraVector, reflNormal), 0);
+	float facing = 1.0 - ndotl;
+	float fresnelFac = fresnel(facing, 0.2, 2.0);
 
-	vec4 diffuseColor = kd * lightColor * diffuseAngle;
-	diffuseColor.xyz = clamp(0.1 - diffuseColor.rgb * 0.9, 0, 1);
-	vec4 specularColor = ks * lightColor * pow(specularAngle, 50);
+	float dist = clamp(10.0 / depth, 0, 1);
+	vec4 waterColor = vec4(0, 0.15, 0.115, 1);
+	vec4 deepColor = refractionA * refractionB * dist + (1 - dist) * waterColor;
 
-	vec4 waterColor = (1.0 - fresnelFac) * vec4(0.6 * alt, 0.8 * alt, 1.0 * alt, transparency);
-	outColor = waterColor + texColor + reflectionColor + diffuseColor + specularColor;
+	waterColor = waterColor * facing + deepColor * (1.0 - facing);
+
+	reflection = fresnelFac * reflection;
+
+	float diffuseAngle = max(0.0, dot(reflNormal, cameraVector));
+	float kd = 0.25 * diffuseAngle;
+	vec4 diffuseColor = kd * vec4(1);
+
+	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
+	float ks = 0.40 * specularAngle;
+	vec4 specularColor = ks * vec4(1) * pow(specularAngle, 50);
+
+	outColor = waterColor + reflection + specularColor + diffuseColor;
 }

@@ -34,7 +34,7 @@ float rand(vec2 seed){
 float freq(float wavelength, float depth)
 {
 	float k = 2.0 * 3.14159265358979323846 / wavelength;
-	return sqrt(9.8 * k * tanh(k * (1.0 - 1.0 / depth)));
+	return sqrt(9.8 * k);
 }
 
 //Calculate the phase shift of a wave for some speed and wavelength.
@@ -72,9 +72,9 @@ void main(void)
 	const float hd = 0.0002;
 
 	//Wave dispersions with respect to depth to terrain (stored in y-coordinate)
-	vec3 W = vec3(freq(l1, inPosition.y),
-	 freq(l2, inPosition.y),
-	 freq(l3, inPosition.y));
+	vec3 W = vec3(freq(l1, -inPosition.y),
+	 freq(l2, -inPosition.y),
+	 freq(l3, -inPosition.y));
 
 	//Wave phase
 	vec3 PHI = vec3(phase(s1, l1),
@@ -95,9 +95,7 @@ void main(void)
 	  steepness(W[2], A[2]));
 
 	//Wave height displacement
-	float y = displacement(inPosition.y,
-	 hd,
-	 rand(inPosition.xz));
+	float y = displacement(inPosition.y, hd, rand(inPosition.xz));
 
 	vec3 P = vec3(inPosition.x, y, inPosition.z);
 	for (int i = 0; i < 3; i++)
@@ -147,7 +145,7 @@ void main(void)
 	binormal = vec3(B.x, -B.y, B.z);
 	tangent = vec3(T.x, -T.y, T.z);
 
-	depth = inPosition.y;
+	depth = -inPosition.y;
 	position = P;
 	texCoord = inTexCoord;
 

@@ -23,7 +23,7 @@ void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, 
 	wv = worldToView;
 	proj = projectionMatrix;
 
-	LoadTGATextureSimple(WATER_512_TEXTURE, &waterTex);
+	LoadTGATextureSimple(WATER_2_NORMAL, &waterTex);
 
 	waterProgram = loadShaders(WATER_VERT_SHADER, WATER_FRAG_SHADER);
 	glUseProgram(waterProgram);
@@ -57,11 +57,11 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	for (x = 0; x < sx; ++x)
 		for (z = 0; z < sz; ++z)
 		{
-			if ((x + z * sx) * 3 < (unsigned int) terrainModel->numVertices)
+			if ((x + z * sx) * 3 <= (unsigned int) terrainModel->numVertices)
 			{
 				depth = terrainModel->vertexArray[(x + z * sx) * 3 + 1];
 			} else {
-				depth = 100.0f;
+				depth = -100.0f;
 			}
 			
 			vertexArray[(x + z * sx)*3 + 0] = (GLfloat)x / tessFact;

@@ -23,6 +23,8 @@
 #define SAND_1_NORMAL "textures/sand_normal.tga"
 #define ROCK_1_TEXTURE "textures/rock.tga"
 #define ROCK_1_NORMAL "textures/rock_normal.tga"
+#define WATER_1_NORMAL "textures/water_normal.tga"
+#define WATER_2_NORMAL "textures/water_2_normal.tga"
 #define GRASS_2_TEXTURE "textures/Grasstex.tga"
 #define HEAD_COLOR_PNG_TEXTURE "textures/headcolor.png"
 #define HEAD_COLOR_TGA_TEXTURE "textures/headcolor.tga"
