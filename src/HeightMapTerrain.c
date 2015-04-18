@@ -37,6 +37,10 @@ GLuint grass;
 GLuint sand;
 GLuint rock;
 
+GLuint grass_normal;
+GLuint sand_normal;
+GLuint rock_normal;
+
 void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView, mat4 *projectionMatrix)
 {
 	dt = deltaTime;
@@ -56,9 +60,17 @@ void SetupHeightMapTerrain(GLfloat *deltaTime, mat4 *modelWorld, mat4 *worldView
 	glUniform1i(glGetUniformLocation(terrainProgram, "sand"), 1); // Texture unit 1
 	glUniform1i(glGetUniformLocation(terrainProgram, "rock"), 2); // Texture unit 2
 
+	glUniform1i(glGetUniformLocation(terrainProgram, "grass_normal"), 3); // Texture unit 0
+	glUniform1i(glGetUniformLocation(terrainProgram, "sand_normal"), 4); // Texture unit 1
+	glUniform1i(glGetUniformLocation(terrainProgram, "rock_normal"), 5); // Texture unit 2
+
 	LoadTGATextureSimple(GRASS_1_TEXTURE, &grass);
 	LoadTGATextureSimple(SAND_1_TEXTURE, &sand);
 	LoadTGATextureSimple(ROCK_1_TEXTURE, &rock);
+	
+	LoadTGATextureSimple(GRASS_1_NORMAL, &grass_normal);
+	LoadTGATextureSimple(SAND_1_NORMAL, &sand_normal);
+	LoadTGATextureSimple(ROCK_1_NORMAL, &rock_normal);
 }
 
 void DrawHeightMapTerrain(vec3 sun)
@@ -92,7 +104,26 @@ void DrawHeightMapTerrain(vec3 sun)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	
-	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTexCoord", "inColor");
+	
+	// Bind Our Texture grass normal
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, grass_normal);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	// Bind Our Texture sand normal
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, sand_normal);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	// Bind Our Texture grass
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, rock_normal);		
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTangent", "inBitangent", "inTexCoord", "inColor");
 
 
 }
@@ -115,6 +146,8 @@ void GenerateTerrain()
 
 	GLfloat *vertexArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *normalArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
+	GLfloat *tangentArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
+	GLfloat *bitangentArray = (GLfloat *)malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *texCoordArray = (GLfloat *)malloc(sizeof(GLfloat) * 2 * vertexCount);
 	GLfloat *colorArray = (GLfloat *)malloc(sizeof(GLfloat)*3 * vertexCount);
 	GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
@@ -172,8 +205,8 @@ void GenerateTerrain()
 		{
 
 			int i;
-			vec3 normal;
-
+			vec3 normal, tangent, bitangent;
+			vec3 c1, c2;
 			for (i = 0; i < NEIGHBOR; i++)
 			{
 
@@ -227,6 +260,30 @@ void GenerateTerrain()
 			normalArray[(x + z * terrainWidth) * 3 + 0] = normal.x;
 			normalArray[(x + z * terrainWidth) * 3 + 1] = normal.y;
 			normalArray[(x + z * terrainWidth) * 3 + 2] = normal.z;
+		
+			c1 = CrossProduct(normal, SetVector(0,0,1));
+			c2 = CrossProduct(normal, SetVector(0,1,0));
+
+			if(Norm(c1) > Norm(c2))
+			{
+				tangent = c1;
+			}
+			else
+			{
+				tangent = c2;
+			}
+			tangent = Normalize(tangent);
+			bitangent = CrossProduct(normal, tangent);
+			bitangent = Normalize(bitangent);
+
+			tangentArray[(x + z * terrainWidth) * 3 + 0] = tangent.x;
+			tangentArray[(x + z * terrainWidth) * 3 + 1] = tangent.y;
+			tangentArray[(x + z * terrainWidth) * 3 + 2] = tangent.z;
+			
+			bitangentArray[(x + z * terrainWidth) * 3 + 0] = bitangent.x;
+			bitangentArray[(x + z * terrainWidth) * 3 + 1] = bitangent.y;
+			bitangentArray[(x + z * terrainWidth) * 3 + 2] = bitangent.z;
+
 		} 
 	} 
 
@@ -252,6 +309,8 @@ void GenerateTerrain()
 	terrainModel = LoadDataToModel(
 		vertexArray,
 		normalArray,
+		tangentArray,
+		bitangentArray,
 		texCoordArray,
 		colorArray,
 		indexArray,

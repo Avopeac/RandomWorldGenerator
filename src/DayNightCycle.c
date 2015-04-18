@@ -110,7 +110,7 @@ void DrawDayNightCycle()
 	
 	glUniformMatrix4fv(glGetUniformLocation(skydomeProgram, "modelToWorld"), 1, GL_TRUE, mw->m);
 	glUniformMatrix4fv(glGetUniformLocation(skydomeProgram, "worldToView"), 1, GL_TRUE, wv->m);
-	DrawModel(skydome, skydomeProgram, "inPosition", "inNormal", NULL, NULL);
+	DrawModel(skydome, skydomeProgram, "inPosition", "inNormal", NULL, NULL, NULL, NULL);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

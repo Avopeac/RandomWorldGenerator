@@ -860,7 +860,7 @@ void ScaleModel(Model *m, float sx, float sy, float sz)
 // goal is stability.
 
 void DrawModel(Model *m, GLuint program, char* vertexVariableName, 
-	char* normalVariableName, char* texCoordVariableName, char* colorVariableName)
+	char* normalVariableName, char* tangentVariableName, char* bitangentVariableName, char* texCoordVariableName, char* colorVariableName)
 {
 	if (m != NULL)
 	{
@@ -906,7 +906,7 @@ void DrawModel(Model *m, GLuint program, char* vertexVariableName,
 				//fprintf(stderr, "DrawModel warning: '%s' not found in shader!\n", texCoordVariableName);
 		}
 
-		// VBO for texture coordinate data NEW for 5b
+		// VBO for texture color data NEW for 5b
 		if ((m->colorArray != NULL)&&(colorVariableName != NULL))
 		{
 			loc = glGetAttribLocation(program, colorVariableName);
@@ -918,6 +918,28 @@ void DrawModel(Model *m, GLuint program, char* vertexVariableName,
 			}
 		}
 
+		// VBO for tangent data NEW for 5b
+		if ((m->tangentArray != NULL)&&(tangentVariableName != NULL))
+		{
+			loc = glGetAttribLocation(program, tangentVariableName);
+			if (loc >= 0)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, m->tgb);
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+				glEnableVertexAttribArray(loc);
+			}
+		}
+
+		if ((m->bitangentArray != NULL)&&(bitangentVariableName != NULL))
+		{
+			loc = glGetAttribLocation(program, bitangentVariableName);
+			if (loc >= 0)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, m->btb);
+				glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+				glEnableVertexAttribArray(loc);
+			}
+		}
 		glDrawElements(GL_TRIANGLES, m->numIndices, GL_UNSIGNED_INT, 0L);
 	}
 }
@@ -980,6 +1002,10 @@ void BuildModelVAO2(Model *m/*,
 	glGenBuffers(1, &m->vb);
 	glGenBuffers(1, &m->ib);
 	glGenBuffers(1, &m->nb);
+	if(m->tangentArray != NULL)
+		glGenBuffers(1,&m->tgb);
+	if(m->bitangentArray != NULL)
+		glGenBuffers(1,&m->btb);
 	if (m->texCoordArray != NULL)
 		glGenBuffers(1, &m->tb);
 	if(m->colorArray != NULL)
@@ -998,6 +1024,18 @@ void BuildModelVAO2(Model *m/*,
 	//glVertexAttribPointer(glGetAttribLocation(program, normalVariableName), 3, GL_FLOAT, GL_FALSE, 0, 0);
 	//glEnableVertexAttribArray(glGetAttribLocation(program, normalVariableName));
 	
+	//VBO for tangent data
+	if(m->tangentArray != NULL)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m->tgb);
+		glBufferData(GL_ARRAY_BUFFER, m->numVertices*3*sizeof(GLfloat), m->tangentArray, GL_STATIC_DRAW);
+	}
+
+	if(m->bitangentArray != NULL)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m->btb);
+		glBufferData(GL_ARRAY_BUFFER, m->numVertices*3*sizeof(GLfloat), m->bitangentArray, GL_STATIC_DRAW);
+	}
 	// VBO for texture coordinate data NEW for 5b
 	if (m->texCoordArray != NULL)
 	{
@@ -1037,6 +1075,8 @@ Model* LoadModelPlus(char* name/*,
 Model* LoadDataToModel(
 			GLfloat *vertices,
 			GLfloat *normals,
+			GLfloat *tangents,
+			GLfloat *bitangents,
 			GLfloat *texCoords,
 			GLfloat *colors,
 			GLuint *indices,
@@ -1049,6 +1089,8 @@ Model* LoadDataToModel(
 	m->vertexArray = vertices;
 	m->texCoordArray = texCoords;
 	m->normalArray = normals;
+	m->tangentArray = tangents;
+	m->bitangentArray = bitangents;
 	m->indexArray = indices;
 	m->numVertices = numVert;
 	m->numIndices = numInd;

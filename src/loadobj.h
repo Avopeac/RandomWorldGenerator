@@ -16,6 +16,8 @@ typedef struct
 {
   GLfloat* vertexArray;
   GLfloat* normalArray;
+  GLfloat* tangentArray;
+  GLfloat* bitangentArray;
   GLfloat* texCoordArray;
   GLfloat* colorArray; // Rarely used
   GLuint* indexArray;
@@ -24,14 +26,14 @@ typedef struct
   
   // Space for saving VBO and VAO IDs
   GLuint vao; // VAO
-  GLuint vb, ib, nb, tb,cb; // VBOs
+  GLuint vb, ib, nb, tgb, btb, tb,cb; // VBOs
 } Model;
 
 Model* LoadModel(char* name);
 
 // NEW:
 
-void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName, char* colorVariableName);
+void DrawModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* tangentVariableName, char* bitangentVariableName, char* texCoordVariableName, char* colorVariableName);
 void DrawWireframeModel(Model *m, GLuint program, char* vertexVariableName, char* normalVariableName, char* texCoordVariableName);
 
 Model* LoadModelPlus(char* name/*,
@@ -46,6 +48,8 @@ void EnableModelForShader(Model *m, GLuint program, // NOT TESTED
 Model* LoadDataToModel(
 			GLfloat *vertices,
 			GLfloat *normals,
+			GLfloat *tangents,
+			GLfloat *bitangents,
 			GLfloat *texCoords,
 			GLfloat *colors,
 			GLuint *indices,
