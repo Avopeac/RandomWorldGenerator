@@ -55,7 +55,7 @@ void main(void)
 	//surfaceToLight = mat3(mdlMatrix) * surfaceToLight; 
 	
 	//ambient
-    vec3 ambient = 0.05 * surfaceColor.rgb * vec3(1,1,1); // * surfaceColor;
+    vec3 ambient = 0.1 * surfaceColor.rgb * vec3(1,1,1); // * surfaceColor;
 
     //diffuse
     float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
@@ -76,6 +76,6 @@ void main(void)
     vec3 linearColor = clamp(ambient + diffuse + specular, 0, 1);
     
     //final color (after gamma correction)
-    vec3 gamma = vec3(1.0/2.2);
-    finalColor = vec4(pow(linearColor, gamma), surfaceColor.a);
+    //vec3 gamma = vec3(1.0/2.2);
+    finalColor = vec4(linearColor, surfaceColor.a);
 }
