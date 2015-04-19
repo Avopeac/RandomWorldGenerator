@@ -14,5 +14,5 @@ uniform mat4 worldToView;
 void main(void)
 {
 	position = vec3(modelToWorld * vec4(inPosition, 1));
-	gl_Position = projMatrix * mat4(mat3(worldToView)) * modelToWorld * vec4(inPosition,1.0);
+	gl_Position = projMatrix * mat4(mat3(worldToView)) * modelToWorld * vec4(inPosition, 1.0);
 }

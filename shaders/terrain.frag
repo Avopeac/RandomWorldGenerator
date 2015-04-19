@@ -77,5 +77,10 @@ void main(void)
     
     //final color (after gamma correction)
     //vec3 gamma = vec3(1.0/2.2);
-    finalColor = vec4(linearColor, surfaceColor.a);
+
+	float fallOff = 0.03;
+	float fogAmount = 1.0 - exp(fragVert.z * fallOff);
+	vec3 fogColor = vec3(0.5, 0.6, 0.7);
+
+    finalColor = vec4(mix(linearColor, fogColor, fogAmount), surfaceColor.a);
 }

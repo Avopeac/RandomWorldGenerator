@@ -90,6 +90,7 @@ void InitDayNightCycle(int year, int month, int day, int sec, float daySpeed, fl
 
 void DrawDayNightCycle()
 {
+
 	glUseProgram(skydomeProgram);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -108,7 +109,8 @@ void DrawDayNightCycle()
 	glUniform1f(glGetUniformLocation(skydomeProgram, "zenithY"), zenithY);
 	
 	
-	glUniformMatrix4fv(glGetUniformLocation(skydomeProgram, "modelToWorld"), 1, GL_TRUE, mw->m);
+
+	glUniformMatrix4fv(glGetUniformLocation(skydomeProgram, "modelToWorld"), 1, GL_TRUE, Mult(*mw, T(0, -12, 0)).m);
 	glUniformMatrix4fv(glGetUniformLocation(skydomeProgram, "worldToView"), 1, GL_TRUE, wv->m);
 	DrawModel(skydome, skydomeProgram, "inPosition", "inNormal", NULL, NULL, NULL, NULL);
 

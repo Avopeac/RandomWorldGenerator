@@ -62,7 +62,7 @@ void init(void)
 
 	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 05, 30, 36000, 1000.0f,
+	InitDayNightCycle(2015, 07, 30, 36000, 1000.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 

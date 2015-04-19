@@ -32,7 +32,7 @@ void main(void)
 	mat3 MW3 = mat3(modelToWorld);
 	mat3 WV3 = mat3(worldToView);
 	mat3 NM = WV3 * MWIT;
-
+	
 	vec3 lightPosition = vec3(worldToView * modelToWorld * vec4(solarPosition, 1));
 	vec3 surfacePosition = vec3(worldToView * modelToWorld * vec4(position, 1));
 
@@ -64,7 +64,7 @@ void main(void)
 	float fresnelFac = fresnel(facing, 0.2, 2.0);
 
 	float dist = clamp(10.0 / depth, 0, 1);
-	vec4 waterColor = vec4(0, 0.15, 0.115, 1);
+	vec4 waterColor = vec4(0, 0.1, 0.115, 1);
 	vec4 deepColor = refractionA * refractionB * dist + (1 - dist) * waterColor;
 
 	waterColor = waterColor * facing + deepColor * (1.0 - facing);
@@ -72,12 +72,18 @@ void main(void)
 	reflection = fresnelFac * reflection;
 
 	float diffuseAngle = max(0.0, dot(reflNormal, cameraVector));
-	float kd = 0.25 * diffuseAngle;
+	float kd = 0.40 * diffuseAngle;
 	vec4 diffuseColor = kd * vec4(1);
 
 	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
 	float ks = 0.40 * specularAngle;
 	vec4 specularColor = ks * vec4(1) * pow(specularAngle, 50);
 
-	outColor = waterColor + reflection + specularColor + diffuseColor;
+	vec4 finalColor = waterColor + reflection + specularColor + diffuseColor;
+
+	float fallOff = 0.02;
+	float fogAmount = 1.0 - exp(-cameraVector.z * fallOff);
+	vec4 fogColor = vec4(0.5, 0.6, 0.7, 1);
+
+	outColor = finalColor; //mix(finalColor, fogColor, fogAmount);
 }
