@@ -25,7 +25,7 @@ SolarData sData;
 
 //Turbidity is basically a fraction of light scattering based due to haze (molecules in the air).
 //Determines how clear the view is.
-float turbidity = 2.5f;
+float turbidity = 3.0f;
 float luminanceZ = 0.0f;
 float zenithX = 0.0f;
 float zenithY = 0.0f;

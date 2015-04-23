@@ -24,7 +24,7 @@ uniform vec3 solarPosition;
 
 void main(void)
 {
-	vec3 lightPosition = normalize(mat3(mdlMatrix) * solarPosition);
+	vec3 lightPosition = normalize(solarPosition);
 	vec3 lightColor = vec3(1,0.8,0.8);
 	
 	//Normalize vectors
@@ -78,9 +78,12 @@ void main(void)
     //final color (after gamma correction)
     //vec3 gamma = vec3(1.0/2.2);
 
-	float fallOff = 0.03;
+	float fallOff = 0.06;
 	float fogAmount = 1.0 - exp(fragVert.z * fallOff);
-	vec3 fogColor = vec3(0.5, 0.6, 0.7);
+
+	float alt = abs(clamp(lightPosition.y, -1, 0));
+
+	vec3 fogColor = vec3(0.5 * alt, 0.6 * alt, 0.7 * alt);
 
     finalColor = vec4(mix(linearColor, fogColor, fogAmount), surfaceColor.a);
 }
