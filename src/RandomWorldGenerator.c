@@ -115,7 +115,7 @@ void display(void)
 
 
 	DrawDayNightCycle();
-	DrawObjectManager(sData.position);
+	DrawObjectManager(sData.position, camData);
 	DrawHeightMapTerrain(sData.position);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -124,7 +124,7 @@ void display(void)
 
 	
 	DrawDayNightCycle();
-	DrawObjectManager(sData.position);
+	DrawObjectManager(sData.position, camData);
 	DrawHeightMapTerrain(sData.position);
 	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos, rt->color);
 

@@ -26,12 +26,25 @@ WorldObject* WorldObject_New(Model* model, GLuint program, GLuint texture, mat4 
 
 	return object;
 }
-void Draw_WorldObject(WorldObject * obj, vec3 sun)
+void Draw_WorldObject(WorldObject * obj, vec3 sun, CameraData cam)
 {
+	
+	float scale = 0;
+	float dot;
+	vec3 distanceFromCam = VectorSub(SetVector(obj->posx, obj->posy, obj->posz), cam.pos);
 	mat4 total = IdentityMatrix();
+	mat4 scaleM = T(scale,scale,scale);
 	obj->translation = T(obj->posx, obj->posy, obj->posz); 
+	
+	//Check if distance is too large
+	//if(Norm(distanceFromCam) > 25) return;
+	distanceFromCam = Normalize(distanceFromCam);
+	//Check is in from of cam
+	dot = DotProduct(distanceFromCam, Normalize(GetCamForward()));
+	if( dot > -0.5) return;
+
 	obj->rotation = Mult(Rz(obj->rotz),  Mult(Rx(obj->rotx) , Ry(obj->roty) ));
-	obj->modelMatrix = Mult(obj->translation, obj->rotation);
+	obj->modelMatrix = Mult( Mult( obj->translation, obj->rotation), scaleM);
 
 	
 

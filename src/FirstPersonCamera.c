@@ -189,6 +189,11 @@ CameraData GetCameraData()
   return cData;
 }
 
+vec3 GetCamForward()
+{
+	return camForward;
+}
+
 //Debug print for keys
 void PrintKeys()
 {

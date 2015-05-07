@@ -38,7 +38,3 @@ double clamp(double value, int min, int max);
 void smoothMap(Tilemap* tilemap, int scale, int radius);
 double calculateAvgHeight(Tilemap* tilemap, int x, int y, int r);
 
-/*
-void GenerateWorldObjects(Tilemap * tilemap);
-void DrawWorldObjects(Tilemap * tilemap);
-*/

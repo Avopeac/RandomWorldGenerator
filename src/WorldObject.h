@@ -1,5 +1,6 @@
 #include "loadobj.h"
 #include "VectorUtils3.h"
+#include "FirstPersonCamera.h"
 
 #ifndef WORLDOBJECT
 #define WORLDOBJECT
@@ -22,4 +23,4 @@ typedef struct WorldObject
 #endif
 WorldObject* WorldObject_New(Model* model, GLuint program, GLuint texture, mat4 * worldView, mat4 * projectionMatrix, 
 	float posx, float posy, float posz, float rotx, float roty, float rotz);
-void Draw_WorldObject(WorldObject * obj);
+void Draw_WorldObject(WorldObject * obj, vec3 sun, CameraData cam);

@@ -21,6 +21,7 @@
 #define TERRAIN_FFT_TEXTURE "textures/fft-terrain.tga"
 #define GRASS_1_TEXTURE "textures/grass.tga"
 #define GRASS_1_NORMAL "textures/grass_normal.tga"
+#define TREE_TEXTURE "textures/tredtex.tga"
 #define SAND_1_TEXTURE "textures/sand.tga"
 #define SAND_1_NORMAL "textures/sand_normal.tga"
 #define ROCK_1_TEXTURE "textures/rock.tga"

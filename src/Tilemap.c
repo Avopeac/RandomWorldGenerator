@@ -228,8 +228,8 @@ double clamp(double value, int min, int max)
 
 float random_value()
 {
-	int random = rand()%200;
-	float ret = (float)( ((float)random)/100 - 1); 
+	int random = rand()%20000;
+	float ret = (float)( ((float)random)/10000 - 1); 
 	return ret;
 }
 void smoothMap(Tilemap* tilemap, int scale, int radius)

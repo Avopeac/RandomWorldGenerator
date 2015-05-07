@@ -8,6 +8,7 @@
 #include "HeightMapTerrain.h"
 #include <time.h>
 
+
 #define MAX_OBJECTS 2048
 //Array of all objects in the world
 WorldObject ** objects;
@@ -20,7 +21,7 @@ mat4* wv;
 
 GLuint objectProgram;
 
-GLuint grass;
+GLuint tree;
 GLuint sand;
 GLuint rock;
 
@@ -48,7 +49,7 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 	glUniform1i(glGetUniformLocation(objectProgram, "sand_normal"), 4); // Texture unit 1
 	glUniform1i(glGetUniformLocation(objectProgram, "rock_normal"), 5); // Texture unit 2
 
-	LoadTGATextureSimple(GRASS_1_TEXTURE, &grass);
+	LoadTGATextureSimple(TREE_TEXTURE, &tree);
 	LoadTGATextureSimple(SAND_1_TEXTURE, &sand);
 	LoadTGATextureSimple(ROCK_1_TEXTURE, &rock);
 	
@@ -60,14 +61,14 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 	objectCounter = 0;
 }
 
-void DrawObjectManager(vec3 sun)
+void DrawObjectManager(vec3 sun, CameraData cam)
 {
 	int i;
-	fprintf(stderr, "\nNumber of objects %d", objectCounter);
+	//fprintf(stderr, "\nNumber of objects %d", objectCounter);
 
 	for(i = 0; i < objectCounter; i++)
 	{
-		Draw_WorldObject(objects[i]);
+		Draw_WorldObject(objects[i], sun, cam);
 	}
 }
 
@@ -80,7 +81,7 @@ void GenerateObjects()
 	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject*));
 
 
-	model = LoadModelPlus("models/bunnyplus.obj");
+	model = LoadModelPlus("models/tred.obj");
 	tilemap = getTilemap();
 
 	//Init RNG
@@ -90,11 +91,11 @@ void GenerateObjects()
 		for(y = 0; y < tilemap->size; y++)
 		{
 			random  = random_value();
-			if(random > 0.98)
+			if(random > 0.995)
 			{
 				//Hardcoded map scale
-				 obj = WorldObject_New(model, objectProgram, grass, wv, proj,
-					x/4,-getHeightWrapping(tilemap, x,y),y/4,0,0,0);
+				 obj = WorldObject_New(model, objectProgram, tree, wv, proj,
+					x/4,-getHeightWrapping(tilemap, x,y) - 0.3 ,y/4,0,0,0);
 				//fprintf(stderr, "Object Added: %d %d :: %.3f", x,y ,random);
 				objects[objectCounter] = obj;	
 				objectCounter++;

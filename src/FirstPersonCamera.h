@@ -15,6 +15,8 @@
 #define EXIT 27
 
 //The camera data struct has members for look at data
+#ifndef CAMDATA
+#define CAMDATA
 typedef struct CameraData 
 {
   vec3 pos;
@@ -22,8 +24,10 @@ typedef struct CameraData
   vec3 normal;
   vec3 rot;
 } CameraData;
-
+#endif
 //The mouse data struct is used when calculating mouse movement
+#ifndef MOUSEDATA
+#define MOUSEDATA
 typedef struct MouseData
 {
   float dy;
@@ -31,7 +35,7 @@ typedef struct MouseData
   float x;
   float y;
 } MouseData;
-
+#endif
 //Sets the window size that is currently used making mouse movement correct
 void SetWindowSizeForMovement(int x, int y);
 void SetWorldSizeForMovement(int width, int height);
@@ -61,4 +65,6 @@ void PrintMouseData();
 //Get the current camera movement data
 MouseData GetMouseData();
 CameraData GetCameraData();
+
+vec3 GetCamForward();
 
