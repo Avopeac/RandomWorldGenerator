@@ -22,6 +22,7 @@
 #define GRASS_1_TEXTURE "textures/grass.tga"
 #define GRASS_1_NORMAL "textures/grass_normal.tga"
 #define TREE_TEXTURE "textures/tredtex.tga"
+#define NICE_TREE_TEXTURE "textures/nicetreetex.tga"
 #define SAND_1_TEXTURE "textures/sand.tga"
 #define SAND_1_NORMAL "textures/sand_normal.tga"
 #define ROCK_1_TEXTURE "textures/rock.tga"

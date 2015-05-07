@@ -49,7 +49,7 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 	glUniform1i(glGetUniformLocation(objectProgram, "sand_normal"), 4); // Texture unit 1
 	glUniform1i(glGetUniformLocation(objectProgram, "rock_normal"), 5); // Texture unit 2
 
-	LoadTGATextureSimple(TREE_TEXTURE, &tree);
+	LoadTGATextureSimple(NICE_TREE_TEXTURE, &tree);
 	LoadTGATextureSimple(SAND_1_TEXTURE, &sand);
 	LoadTGATextureSimple(ROCK_1_TEXTURE, &rock);
 	
@@ -81,7 +81,7 @@ void GenerateObjects()
 	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject*));
 
 
-	model = LoadModelPlus("models/tred.obj");
+	model = LoadModelPlus("models/nicetree.obj");
 	tilemap = getTilemap();
 
 	//Init RNG
