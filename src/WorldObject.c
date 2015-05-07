@@ -32,7 +32,6 @@ void Draw_WorldObject(WorldObject * obj, vec3 sun)
 	obj->translation = T(obj->posx, obj->posy, obj->posz); 
 	obj->rotation = Mult(Rz(obj->rotz),  Mult(Rx(obj->rotx) , Ry(obj->roty) ));
 	obj->modelMatrix = Mult(obj->translation, obj->rotation);
-	obj->modelView = Mult(*(obj->worldView), obj->modelMatrix);
 
 	
 
@@ -41,7 +40,7 @@ void Draw_WorldObject(WorldObject * obj, vec3 sun)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	total = Mult(obj->modelView, *(obj->worldView));
+	total = Mult( *(obj->worldView), obj->modelMatrix);
 	glUniformMatrix4fv(glGetUniformLocation(obj->program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glUniform3fv(glGetUniformLocation(obj->program, "solarPosition"), 1, &(sun.x));
 

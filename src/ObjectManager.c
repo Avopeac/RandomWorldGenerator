@@ -8,8 +8,9 @@
 #include "HeightMapTerrain.h"
 #include <time.h>
 
+#define MAX_OBJECTS 2048
 //Array of all objects in the world
-WorldObject * objects;
+WorldObject ** objects;
 int objectCounter;
 
 float *dt;
@@ -54,11 +55,20 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 	LoadTGATextureSimple(GRASS_1_NORMAL, &grass_normal);
 	LoadTGATextureSimple(SAND_1_NORMAL, &sand_normal);
 	LoadTGATextureSimple(ROCK_1_NORMAL, &rock_normal);
+
+	objects = (WorldObject**)malloc(sizeof(WorldObject*)*MAX_OBJECTS);
+	objectCounter = 0;
 }
 
 void DrawObjectManager(vec3 sun)
 {
+	int i;
+	fprintf(stderr, "\nNumber of objects %d", objectCounter);
 
+	for(i = 0; i < objectCounter; i++)
+	{
+		Draw_WorldObject(objects[i]);
+	}
 }
 
 void GenerateObjects()
@@ -83,11 +93,12 @@ void GenerateObjects()
 			if(random > 0.98)
 			{
 				//Hardcoded map scale
-				 obj = WorldObject_New(model, objectProgram, grass, tilemap->worldView, tilemap->projectionMatrix,
+				 obj = WorldObject_New(model, objectProgram, grass, wv, proj,
 					x/4,-getHeightWrapping(tilemap, x,y),y/4,0,0,0);
 				//fprintf(stderr, "Object Added: %d %d :: %.3f", x,y ,random);
-				
-				setObjectWrapping(tilemap, x, y, obj);
+				objects[objectCounter] = obj;	
+				objectCounter++;
+				if(objectCounter >= MAX_OBJECTS) return;
 			}
 		}
 	}

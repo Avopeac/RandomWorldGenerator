@@ -13,7 +13,6 @@ Tilemap* Tilemap_New(int size, mat4* worldView, mat4* projectionMatrix)
 	
 	double * heights = (double*)malloc(sizeof(double)*size*size);
 	int * colors = (int*)malloc(sizeof(int)*size*size);
-	WorldObject ** objects = (WorldObject**)malloc(sizeof(WorldObject*)*size*size);
 	int * set = (int*)malloc(sizeof(int)*size*size);
 	int x,y, index;
 	Tilemap* tilemap;
@@ -31,11 +30,8 @@ Tilemap* Tilemap_New(int size, mat4* worldView, mat4* projectionMatrix)
 	tilemap = (Tilemap*)malloc(sizeof(Tilemap));
 	tilemap->heights = heights;
 	tilemap->colors = colors;
-	tilemap->objects = objects;
 	tilemap->objectSet = set;
 	tilemap->size = size;
-	tilemap->worldView = worldView;
-	tilemap->projectionMatrix = projectionMatrix;
 
 	return tilemap;
 }
@@ -83,28 +79,6 @@ int getColorWrapping(Tilemap * tilemap, int x, int y)
 	return tilemap->colors[ xw +  yw*tilemap->size  ];
 }
 
-void setObjectWrapping(Tilemap * tilemap, int x, int y, WorldObject * object)
-{
-	int xw = (x + tilemap->size)%tilemap->size;
-	int yw = (y + tilemap->size)%tilemap->size;
-	tilemap->objects[ xw +  yw*tilemap->size  ] = object;
-	tilemap->objectSet[ xw + yw*tilemap->size ] = 1;
-
-}
-
-WorldObject * getObjectWrapping(Tilemap * tilemap, int x, int y)
-{
-	int xw = (x + tilemap->size)%tilemap->size;
-	int yw = (y + tilemap->size)%tilemap->size;
-	return tilemap->objects[ xw +  yw*tilemap->size  ];
-}
-
-int getObjectSetWrapping(Tilemap * tilemap, int x, int y)
-{
-	int xw = (x + tilemap->size)%tilemap->size;
-	int yw = (y + tilemap->size)%tilemap->size;
-	return tilemap->objectSet[ xw +  yw*tilemap->size  ];
-}
 
 void generateTileMap( Tilemap*  tilemap)
 {
@@ -140,9 +114,6 @@ void generateTileMap( Tilemap*  tilemap)
 		smoothMap(tilemap, 4,8);
 		smoothMap(tilemap, 1,1);
 		setTilemapColors(tilemap);
-
-		GenerateWorldObjects(tilemap);
-
 }
 
 void divide(Tilemap * tilemap, int map_size, int div_size, int stop, int minHeight, int maxHeight)
@@ -299,6 +270,7 @@ double calculateAvgHeight(Tilemap* tilemap, int x, int y, int r)
 	return (double)(total/(double)div);
 }
 
+/*
 void GenerateWorldObjects(Tilemap * tilemap)
 {
 	int x,y;
@@ -365,3 +337,4 @@ void DrawWorldObjects(Tilemap * tilemap)
 	}
 }
 	
+*/

@@ -18,6 +18,7 @@
 #include "WaterSource.h"
 #include "FBOHelper.h"
 #include "Tilemap.h"
+#include "ObjectManager.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -78,6 +79,9 @@ void init(void)
 		0.2f, -1.5f, 2.5f,
 		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1),
 		GetTerrainModel());
+
+	SetupObjectManager(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
+	GenerateObjects(getTilemap());
 }
 
 void display(void)
@@ -96,6 +100,7 @@ void display(void)
 	//	T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
 	sData = GetSolarData();
+	
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rt->fbo);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -110,12 +115,14 @@ void display(void)
 
 
 	DrawDayNightCycle();
+	//DrawObjectManager(sData.position);
 	DrawHeightMapTerrain(sData.position);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
+	DrawObjectManager(sData.position);
 	DrawDayNightCycle();
 	DrawHeightMapTerrain(sData.position);
 	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos, rt->color);

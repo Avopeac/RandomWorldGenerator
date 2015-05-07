@@ -13,11 +13,8 @@ typedef struct Tilemap
 {
 	double* heights;
 	int* colors;
-	WorldObject** objects;
 	int* objectSet;
 	int size;
-	mat4 * worldView;
-	mat4 * projectionMatrix;
 }Tilemap;
 
 #endif
@@ -30,10 +27,6 @@ double getHeightWrapping(Tilemap* tilemap, int x, int y);
 void setColorWrapping(Tilemap * tilemap, int x, int y, int color);
 int getColorWrapping(Tilemap * tilemap, int x, int y);
 
-void setObjectWrapping(Tilemap * tilemap, int x, int y, WorldObject * object);
-WorldObject * getObjectWrapping(Tilemap * tilemap, int x, int y); 
-
-int getObjectSetWrapping(Tilemap * tilemap, int x, int y);
 void generateTileMap( Tilemap*  tilemap);
 void divide(Tilemap * tilemap, int map_size, int div_size, int stop, int minHeight, int maxHeight);
 void diamond(Tilemap* tilemap, int map_size,int x, int y, int size, double offset, int minHeight, int maxHeight);
@@ -45,5 +38,7 @@ double clamp(double value, int min, int max);
 void smoothMap(Tilemap* tilemap, int scale, int radius);
 double calculateAvgHeight(Tilemap* tilemap, int x, int y, int r);
 
+/*
 void GenerateWorldObjects(Tilemap * tilemap);
 void DrawWorldObjects(Tilemap * tilemap);
+*/

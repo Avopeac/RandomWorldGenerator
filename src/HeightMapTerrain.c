@@ -124,7 +124,6 @@ void DrawHeightMapTerrain(vec3 sun)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTangent", "inBitangent", "inTexCoord", "inColor");
-	DrawWorldObjects(tilemap);
 
 	
 }
