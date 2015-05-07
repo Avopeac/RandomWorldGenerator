@@ -3,13 +3,18 @@
 #include <time.h>
 #include <stdlib.h>
 #include "stdio.h"
+#include "LoadTGA.h"
+#include "loadobj.h"
+#include "GL_utilities.h"
+#include "Resources.h"
 
-
-Tilemap* Tilemap_New(int size)
+Tilemap* Tilemap_New(int size, mat4* worldView, mat4* projectionMatrix)
 {
 	
 	double * heights = (double*)malloc(sizeof(double)*size*size);
 	int * colors = (int*)malloc(sizeof(int)*size*size);
+	WorldObject ** objects = (WorldObject**)malloc(sizeof(WorldObject*)*size*size);
+	int * set = (int*)malloc(sizeof(int)*size*size);
 	int x,y, index;
 	Tilemap* tilemap;
 	for(x = 0; x < size; x++)
@@ -18,14 +23,19 @@ Tilemap* Tilemap_New(int size)
 		{
 			index = x + y*size;
 			heights[index] = 0;
-			colors[index] = 0; 
+			colors[index] = 0;
+			set[index] = 0;
 		}
 	}
 
 	tilemap = (Tilemap*)malloc(sizeof(Tilemap));
 	tilemap->heights = heights;
 	tilemap->colors = colors;
+	tilemap->objects = objects;
+	tilemap->objectSet = set;
 	tilemap->size = size;
+	tilemap->worldView = worldView;
+	tilemap->projectionMatrix = projectionMatrix;
 
 	return tilemap;
 }
@@ -73,6 +83,28 @@ int getColorWrapping(Tilemap * tilemap, int x, int y)
 	return tilemap->colors[ xw +  yw*tilemap->size  ];
 }
 
+void setObjectWrapping(Tilemap * tilemap, int x, int y, WorldObject * object)
+{
+	int xw = (x + tilemap->size)%tilemap->size;
+	int yw = (y + tilemap->size)%tilemap->size;
+	tilemap->objects[ xw +  yw*tilemap->size  ] = object;
+	tilemap->objectSet[ xw + yw*tilemap->size ] = 1;
+
+}
+
+WorldObject * getObjectWrapping(Tilemap * tilemap, int x, int y)
+{
+	int xw = (x + tilemap->size)%tilemap->size;
+	int yw = (y + tilemap->size)%tilemap->size;
+	return tilemap->objects[ xw +  yw*tilemap->size  ];
+}
+
+int getObjectSetWrapping(Tilemap * tilemap, int x, int y)
+{
+	int xw = (x + tilemap->size)%tilemap->size;
+	int yw = (y + tilemap->size)%tilemap->size;
+	return tilemap->objectSet[ xw +  yw*tilemap->size  ];
+}
 
 void generateTileMap( Tilemap*  tilemap)
 {
@@ -108,6 +140,8 @@ void generateTileMap( Tilemap*  tilemap)
 		smoothMap(tilemap, 4,8);
 		smoothMap(tilemap, 1,1);
 		setTilemapColors(tilemap);
+
+		GenerateWorldObjects(tilemap);
 
 }
 
@@ -263,5 +297,71 @@ double calculateAvgHeight(Tilemap* tilemap, int x, int y, int r)
 	}
 	if(div <= 0) return 0;
 	return (double)(total/(double)div);
+}
+
+void GenerateWorldObjects(Tilemap * tilemap)
+{
+	int x,y;
+	float random;
+	Model * model;
+	GLuint grass,sand,rock, grass_normal, sand_normal, rock_normal;
+	GLuint program;
+	program = loadShaders(OBJECT_VERT_SHADER, OBJECT_FRAG_SHADER);
+
+	glUseProgram(program);
+	
+	//Upload to GPU
+	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, tilemap->projectionMatrix->m);
+	glUniform1i(glGetUniformLocation(program, "grass"), 0); // Texture unit 0
+	glUniform1i(glGetUniformLocation(program, "sand"), 1); // Texture unit 1
+	glUniform1i(glGetUniformLocation(program, "rock"), 2); // Texture unit 2
+
+	glUniform1i(glGetUniformLocation(program, "grass_normal"), 3); // Texture unit 3
+	glUniform1i(glGetUniformLocation(program, "sand_normal"), 4); // Texture unit 4
+	glUniform1i(glGetUniformLocation(program, "rock_normal"), 5); // Texture unit 5
+
+	LoadTGATextureSimple(GRASS_1_TEXTURE, &grass);
+	LoadTGATextureSimple(SAND_1_TEXTURE, &sand);
+	LoadTGATextureSimple(ROCK_1_TEXTURE, &rock);
+	
+	LoadTGATextureSimple(GRASS_1_NORMAL, &grass_normal);
+	LoadTGATextureSimple(SAND_1_NORMAL, &sand_normal);
+	LoadTGATextureSimple(ROCK_1_NORMAL, &rock_normal);
+
+	
+	model = LoadModelPlus("models/bunnyplus.obj");
+	srand(time(NULL));
+	for(x = 0; x < tilemap->size; x++)
+	{
+		for(y = 0; y < tilemap->size; y++)
+		{
+			random  = random_value();
+			if(random > 0.98)
+			{
+				//Hardcoded map scale
+				WorldObject * obj = WorldObject_New(model, program, grass, tilemap->worldView, tilemap->projectionMatrix,
+					x/4,-getHeightWrapping(tilemap, x,y),y/4,0,0,0);
+				//fprintf(stderr, "Object Added: %d %d :: %.3f", x,y ,random);
+				
+				setObjectWrapping(tilemap, x, y, obj);
+			}
+		}
+	}
+	
+}
+
+void DrawWorldObjects(Tilemap * tilemap)
+{
+	int x,y;
+	WorldObject * obj;
+	for(x = 0; x < tilemap->size; x++)
+	{
+		for(y = 0; y < tilemap->size; y++)
+		{
+			obj = getObjectWrapping(tilemap, x, y);
+			if(getObjectSetWrapping(tilemap,x,y))
+				Draw_WorldObject(obj);
+		}
+	}
 }
 	

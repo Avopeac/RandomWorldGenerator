@@ -124,8 +124,9 @@ void DrawHeightMapTerrain(vec3 sun)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	DrawModel(GetTerrainModel(), terrainProgram, "inPosition", "inNormal", "inTangent", "inBitangent", "inTexCoord", "inColor");
+	DrawWorldObjects(tilemap);
 
-
+	
 }
 
 //Generates the terrain model based on scale and the set height map texture data
@@ -152,8 +153,9 @@ void GenerateTerrain()
 	GLfloat *colorArray = (GLfloat *)malloc(sizeof(GLfloat)*3 * vertexCount);
 	GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
 	
-	tilemap = Tilemap_New(terrainTexture.width);
+	tilemap = Tilemap_New(terrainTexture.width,wv,proj);
 	generateTileMap(tilemap);
+	
 	
 	
 	
@@ -331,6 +333,12 @@ void SetHeightMapTextureData(char* file)
 Model* GetTerrainModel()
 {	
 	return terrainModel;
+}
+
+//Getter for tilemap (call only after generation)
+Tilemap* getTilemap()
+{
+	return tilemap;
 }
 
 //Setter for terrain scale (call before generation)

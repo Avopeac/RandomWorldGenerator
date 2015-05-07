@@ -17,6 +17,7 @@
 #include "DayNightCycle.h"
 #include "WaterSource.h"
 #include "FBOHelper.h"
+#include "Tilemap.h"
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -60,9 +61,10 @@ void init(void)
 	SetHeightMapTextureData(TERRAIN_FFT_TEXTURE);
 	GenerateTerrain();
 
+	
 	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 07, 30, 36000, 1000.0f,
+	InitDayNightCycle(2015, 07, 30, 36000, 1.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 

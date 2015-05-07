@@ -2,6 +2,7 @@
 #include "GL_utilities.h"
 #include "loadobj.h"
 #include "LoadTGA.h"
+#include "Tilemap.h"
 
 //Standard settings
 #define STANDARD_MAP_SCALE 4.0
@@ -28,6 +29,9 @@ void GenerateTerrain();
 
 //Returns the most recent generated terrain
 Model* GetTerrainModel();
+
+//Returns the tilemap
+Tilemap* getTilemap();
 
 //Returns a new vector from a start index (useful instead of doing three calls to get a vertex)
 vec3 GetVectorFromStartIndex(int idx);

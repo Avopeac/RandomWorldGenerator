@@ -11,6 +11,8 @@
 #define SKY_VERT_SHADER "shaders/sky.vert"
 #define WATER_FRAG_SHADER "shaders/water.frag"
 #define WATER_VERT_SHADER "shaders/water.vert"
+#define OBJECT_FRAG_SHADER "shaders/modelShader.frag"
+#define OBJECT_VERT_SHADER "shaders/modelShader.vert"
 
 //Texture locations
 #define TEXTURE_FOLDER "textures/"
