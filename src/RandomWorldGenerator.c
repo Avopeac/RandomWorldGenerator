@@ -62,7 +62,8 @@ void init(void)
 	SetHeightMapTextureData(TERRAIN_FFT_TEXTURE);
 	GenerateTerrain();
 
-	
+	SetupObjectManager(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
+	GenerateObjects(getTilemap());
 	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
 	InitDayNightCycle(2015, 07, 30, 36000, 1.0f,
@@ -80,8 +81,7 @@ void init(void)
 		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1),
 		GetTerrainModel());
 
-	SetupObjectManager(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	GenerateObjects(getTilemap());
+	
 }
 
 void display(void)
@@ -115,15 +115,16 @@ void display(void)
 
 
 	DrawDayNightCycle();
-	//DrawObjectManager(sData.position);
+	DrawObjectManager(sData.position);
 	DrawHeightMapTerrain(sData.position);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
-	DrawObjectManager(sData.position);
+	
 	DrawDayNightCycle();
+	DrawObjectManager(sData.position);
 	DrawHeightMapTerrain(sData.position);
 	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos, rt->color);
 

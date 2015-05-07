@@ -34,17 +34,16 @@ void main(void)
 	vec3 surfacePos = normalize(fragVert);
 	
 	//Add all textures together
-	//vec4 surfaceColor = (texture(grass, texCoord));
-	vec4 surfaceColor = vec4(1,0,0,0);
+	vec4 surfaceColor = (texture(grass, texCoord));
 	
 	//calculate bump normal
 	vec3 bumpNormal = (texture2D( grass_normal, texCoord ).xyz) * fragColor.r;
-	bumpNormal += (texture2D(sand_normal, texCoord).xyz) * fragColor.g;
-	bumpNormal += (texture2D(rock_normal, texCoord).xyz) * fragColor.b;
-	bumpNormal = 2.0 * bumpNormal - vec3(1,1,1);
+	//bumpNormal += (texture2D(sand_normal, texCoord).xyz) * fragColor.g;
+	//bumpNormal += (texture2D(rock_normal, texCoord).xyz) * fragColor.b;
+	//bumpNormal = 2.0 * bumpNormal - vec3(1,1,1);
 	
-	mat3 TBN = mat3(tangent, bitangent, normal);
-	normal = TBN * bumpNormal;
+	//mat3 TBN = mat3(tangent, bitangent, normal);
+	//normal = TBN * bumpNormal;
 	normal = normalize(normal);
 	
 	//setting this to zero, getting very view dependent lighting
@@ -83,6 +82,6 @@ void main(void)
 	float alt = abs(clamp(lightPosition.y, -1, 0));
 
 	vec3 fogColor = vec3(0.5 * alt, 0.6 * alt, 0.7 * alt);
-
+	
     finalColor = vec4(mix(linearColor, fogColor, fogAmount), surfaceColor.a);
 }
