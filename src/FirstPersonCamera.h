@@ -20,11 +20,13 @@
 typedef struct CameraData 
 {
   vec3 pos;
+  vec3 rot;
   vec3 lookAt;
   vec3 normal;
-  vec3 rot;
+  vec3 right;
 } CameraData;
 #endif
+
 //The mouse data struct is used when calculating mouse movement
 #ifndef MOUSEDATA
 #define MOUSEDATA

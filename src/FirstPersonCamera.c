@@ -145,6 +145,10 @@ void CameraMoveAround(float speed, float sensitivity, float deltaTime)
 	  0.0f,
 	  (GLfloat)(cos(cData.rot.x)));
 
+   cData.lookAt = camForward;
+   cData.normal = CrossProduct(camDirectionRight, camForward);
+   cData.right = camDirectionRight;
+
    // W is pressed
    if (controlBitmap[0] == 1)
    {

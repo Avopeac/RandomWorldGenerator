@@ -278,14 +278,14 @@ void UpdateSolarPosition(float hours)
 		sData.solarTime);
 
 	z = (float)(cos(sData.zenithAngle - M_PI / 2.0) * cos(sData.azimuthAngle + M_PI));
-	y = (float)(sin(sData.zenithAngle - M_PI / 2.0)); 
+	y = (float)(sin(sData.zenithAngle - M_PI / 2.0 + M_PI)); 
 	x = (float)(cos(sData.zenithAngle - M_PI / 2.0) * sin(sData.azimuthAngle + M_PI));
 	
 	sData.position = SetVector(x, y, z);
 
 	//For debug.
 	//PrintSolarData();
-	//fprintf(stderr, "calc x %f y %f z %f\n", x, y, z);
+	fprintf(stderr, "calc x %f y %f z %f\n", x, y, z);
 }
 
 void SetDate(int year, int month, int day)

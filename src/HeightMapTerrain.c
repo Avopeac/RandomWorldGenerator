@@ -83,6 +83,8 @@ void DrawHeightMapTerrain(vec3 sun)
 	glEnable(GL_CULL_FACE);
 
 	total = Mult(*wv, *mw);
+	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "worldToView"), 1, GL_TRUE, wv->m);
+	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "modelToWorld"), 1, GL_TRUE, mw->m);
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgram, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glUniform3fv(glGetUniformLocation(terrainProgram, "solarPosition"), 1, &(sun.x));
 	
@@ -247,10 +249,16 @@ void GenerateTerrain()
 
 				if (outside)
 				{
-					tempNormal = SetVector(0,1,0);
+					tempNormal = SetVector(0,0,0);
 				} else 
 				{
-					tempNormal = CalcNormalVector(v0, v1, v2);
+					vec3 l = VectorSub(v1, v0);
+					vec3 r = VectorSub(v2, v0);
+
+					//CHANGED: This caused downward pointing normals.
+					//CalcNormalVector(v0, v1, v2);
+					tempNormal = Normalize(CrossProduct(r, l));
+					
 				}
 
 				normal = VectorAdd(normal, tempNormal);
@@ -273,6 +281,7 @@ void GenerateTerrain()
 			{
 				tangent = c2;
 			}
+
 			tangent = Normalize(tangent);
 			bitangent = CrossProduct(normal, tangent);
 			bitangent = Normalize(bitangent);

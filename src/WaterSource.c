@@ -1,4 +1,5 @@
 #include "WaterSource.h"
+#include "FirstPersonCamera.h"
 #include "VectorUtils3.h"
 #include "GL_utilities.h"
 #include "Resources.h"
@@ -15,6 +16,8 @@ mat4 *mw;
 mat4 *wv;
 mat4 *proj;
 GLuint waterTex;
+
+WaterSource** sources;
 
 void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, mat4 *projectionMatrix)
 {
@@ -134,9 +137,19 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	return source;
 }
 
-void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam, GLuint reflection)
+void DrawWaterSource(WaterSource *source, vec3 sun, CameraData* cam, GLuint reflection)
 {
+
 	mat4 tempModelWorld, tempWorldView;
+
+	float dot;
+	vec3 distanceFromCam = VectorSub(SetVector(source->p.x, source->p.y, source->p.z  + source->sz / 2.0f), cam->pos);
+
+	//Check if distance is too large
+	distanceFromCam = Normalize(distanceFromCam);
+	//Check is in from of cam
+	dot = DotProduct(distanceFromCam, Normalize(GetCamForward()));
+	if( dot > 0.5) return;
 
 	glUseProgram(waterProgram);
 
@@ -172,8 +185,7 @@ void DrawWaterSource(WaterSource *source, vec3 sun, float sunAltitude, vec3 cam,
 	glUniform1f(glGetUniformLocation(waterProgram, "s3"), source->s3);
 
 	glUniform3fv(glGetUniformLocation(waterProgram, "solarPosition"), 1, &(sun.x));
-	glUniform1f(glGetUniformLocation(waterProgram, "solarAltitude"), sunAltitude);
-	glUniform3fv(glGetUniformLocation(waterProgram, "cameraPosition"), 1, &(cam.x));
+	glUniform3fv(glGetUniformLocation(waterProgram, "cameraPosition"), 1, &(cam->pos.x));
 
 	//Add time
 	source->time += (*dt) / 1000.0f;

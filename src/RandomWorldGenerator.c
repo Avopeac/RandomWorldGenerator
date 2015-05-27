@@ -66,7 +66,7 @@ void init(void)
 	GenerateObjects(getTilemap());
 	//Set up day night cycle
 	SetupDayNightCycle(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	InitDayNightCycle(2015, 07, 30, 36000, 1.0f,
+	InitDayNightCycle(2000, 8, 12, 20000, 1000.0f,
 		(float)(LATITUDE_STHLM_SWEDEN * M_PI / 180.0f),
 		(float)(LONGITUDE_STHLM_SWEDEN * M_PI / 180.0f), 2);
 
@@ -113,20 +113,19 @@ void display(void)
 	camMatrix = Mult(Mult(Rx(-camData.rot.y),Mult(Rz(M_PI), Ry(camData.rot.x))),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
-
 	DrawDayNightCycle();
-	DrawObjectManager(sData.position, camData);
 	DrawHeightMapTerrain(sData.position);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	DrawObjectManager(sData.position, camData);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	camMatrix = Mult(Mult(Rx(-camData.rot.y), Ry(camData.rot.x)),
 		T(-camData.pos.x, -camData.pos.y, -camData.pos.z));
 
 	
 	DrawDayNightCycle();
-	DrawObjectManager(sData.position, camData);
 	DrawHeightMapTerrain(sData.position);
-	DrawWaterSource(water, sData.position, sData.zenithAngle, camData.pos, rt->color);
+	DrawWaterSource(water, sData.position, &camData, rt->color);
+	DrawObjectManager(sData.position, camData);
 
 	printError("display 2");
 	

@@ -35,25 +35,14 @@ void main(void)
 	
 	//Add all textures together
 	vec4 surfaceColor = (texture(grass, texCoord));
+	if (surfaceColor.rgb == vec3(0,0,0))
+		surfaceColor.a = 0;
 	
-	//calculate bump normal
-	vec3 bumpNormal = (texture2D( grass_normal, texCoord ).xyz) * fragColor.r;
-	//bumpNormal += (texture2D(sand_normal, texCoord).xyz) * fragColor.g;
-	//bumpNormal += (texture2D(rock_normal, texCoord).xyz) * fragColor.b;
-	//bumpNormal = 2.0 * bumpNormal - vec3(1,1,1);
-	
-	//mat3 TBN = mat3(tangent, bitangent, normal);
-	//normal = TBN * bumpNormal;
-	normal = normalize(normal);
-	
-	//setting this to zero, getting very view dependent lighting
-	surfacePos = vec3(0.0);
     vec3 surfaceToCamera = normalize(-surfacePos);
-	vec3 surfaceToLight = normalize(lightPosition - surfacePos);
-	//surfaceToLight = mat3(mdlMatrix) * surfaceToLight; 
+	vec3 surfaceToLight = normalize(lightPosition);
 	
 	//ambient
-    vec3 ambient = 0.1 * surfaceColor.rgb * vec3(1,1,1); // * surfaceColor;
+    vec3 ambient = 0.5 * surfaceColor.rgb;
 
     //diffuse
     float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
@@ -64,24 +53,21 @@ void main(void)
     if(diffuseCoefficient > 0.0)
 	{
 		vec3 r = 2*normal*dot(surfaceToLight, normal) - surfaceToLight;
-		specularCoefficient = pow(max(0.0, dot(surfaceToCamera, r)), 10);
+		specularCoefficient = pow(max(0.0, dot(surfaceToCamera, r)), 40);
 	}
 	
-    vec3 specular = vec3(0,0,0); //specularCoefficient * vec3(1,1,1) * lightColor;
+    vec3 specular = 0.1 * specularCoefficient * lightColor;
     
     
     //linear color (color before gamma correction)
     vec3 linearColor = clamp(ambient + diffuse + specular, 0, 1);
     
     //final color (after gamma correction)
-    //vec3 gamma = vec3(1.0/2.2);
+     vec3 gamma = vec3(1.0/2.2);
 
 	float fallOff = 0.06;
 	float fogAmount = 1.0 - exp(fragVert.z * fallOff);
-
-	float alt = abs(clamp(lightPosition.y, -1, 0));
-
-	vec3 fogColor = vec3(0.5 * alt, 0.6 * alt, 0.7 * alt);
+	vec3 fogColor = vec3(0.5, 0.6, 0.7) * max(0.0, lightPosition.y);
 	
     finalColor = vec4(mix(linearColor, fogColor, fogAmount), surfaceColor.a);
 }

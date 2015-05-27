@@ -61,12 +61,35 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 	objectCounter = 0;
 }
 
+
+void BubbleSort(CameraData *cam)
+{
+	int i, swapped, n = objectCounter;
+	do {
+		swapped = 0;
+		n--;
+		for (i = 0; i < n; ++i)
+		{
+			if (abs(objects[i]->posz - cam->pos.z) > abs(objects[i + 1]->posz - cam->pos.z))
+			{
+				WorldObject* temp = objects[i];
+				objects[i] = objects[i + 1];
+				objects[i + 1] = temp;
+
+				swapped = 1;
+			}
+		}
+	} while (swapped == 1);
+}
+
 void DrawObjectManager(vec3 sun, CameraData cam)
 {
 	int i;
+	BubbleSort(&cam);
+
 	//fprintf(stderr, "\nNumber of objects %d", objectCounter);
 
-	for(i = 0; i < objectCounter; i++)
+	for(i = objectCounter - 1; i > 0; i--)
 	{
 		Draw_WorldObject(objects[i], sun, cam);
 	}
@@ -78,7 +101,7 @@ void GenerateObjects()
 	float random;
 	Model * model;
 	Tilemap* tilemap;
-	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject*));
+	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject));
 
 
 	model = LoadModelPlus("models/nicetree.obj");

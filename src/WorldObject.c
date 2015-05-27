@@ -50,8 +50,10 @@ void Draw_WorldObject(WorldObject * obj, vec3 sun, CameraData cam)
 
 	glUseProgram(obj->program);
 
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	total = Mult( *(obj->worldView), obj->modelMatrix);
 	glUniformMatrix4fv(glGetUniformLocation(obj->program, "mdlMatrix"), 1, GL_TRUE, total.m);
@@ -65,4 +67,5 @@ void Draw_WorldObject(WorldObject * obj, vec3 sun, CameraData cam)
 
 	DrawModel(obj->model, obj->program, "inPosition", "inNormal", "inTangent", "inBitangent", "inTexCoord", "inColor");
 
+	glDisable(GL_BLEND);
 }
