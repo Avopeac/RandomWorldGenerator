@@ -104,7 +104,7 @@ void GenerateObjects()
 	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject));
 
 
-	model = LoadModelPlus("models/nicetree.obj");
+	model = LoadModelPlus("models/newtree.obj");
 	tilemap = getTilemap();
 
 	//Init RNG
