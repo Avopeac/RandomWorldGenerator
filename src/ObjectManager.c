@@ -22,7 +22,7 @@ mat4* wv;
 GLuint objectProgram;
 
 GLuint tree;
-GLuint sand;
+GLuint stone;
 GLuint rock;
 
 GLuint grass_normal;
@@ -42,7 +42,7 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 
 	glUniformMatrix4fv(glGetUniformLocation(objectProgram, "projMatrix"), 1, GL_TRUE, proj->m);
 	glUniform1i(glGetUniformLocation(objectProgram, "grass"), 0); // Texture unit 0
-	glUniform1i(glGetUniformLocation(objectProgram, "sand"), 1); // Texture unit 1
+	glUniform1i(glGetUniformLocation(objectProgram, "stone"), 1); // Texture unit 1
 	glUniform1i(glGetUniformLocation(objectProgram, "rock"), 2); // Texture unit 2
 
 	glUniform1i(glGetUniformLocation(objectProgram, "grass_normal"), 3); // Texture unit 0
@@ -50,7 +50,7 @@ void SetupObjectManager(float * deltaTime, mat4 *modelWorld, mat4 *worldView, ma
 	glUniform1i(glGetUniformLocation(objectProgram, "rock_normal"), 5); // Texture unit 2
 
 	LoadTGATextureSimple(NICE_TREE_TEXTURE, &tree);
-	LoadTGATextureSimple(SAND_1_TEXTURE, &sand);
+	LoadTGATextureSimple(STONE_TEXTURE, &stone);
 	LoadTGATextureSimple(ROCK_1_TEXTURE, &rock);
 	
 	LoadTGATextureSimple(GRASS_1_NORMAL, &grass_normal);
@@ -99,12 +99,14 @@ void GenerateObjects()
 {
 	int x,y;
 	float random;
-	Model * model;
+	Model * treemodel;
+	Model * stonemodel;
 	Tilemap* tilemap;
 	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject));
 
 
-	model = LoadModelPlus("models/newtree.obj");
+	treemodel = LoadModelPlus("models/newtree.obj");
+	stonemodel = LoadModelPlus("models/stone.obj");
 	tilemap = getTilemap();
 
 	//Init RNG
@@ -116,10 +118,21 @@ void GenerateObjects()
 			random  = random_value();
 			if(random > 0.995)
 			{
-				//Hardcoded map scale
-				 obj = WorldObject_New(model, objectProgram, tree, wv, proj,
+				if(getColorWrapping(tilemap, x,y) == GRASS)
+				{
+					obj = WorldObject_New(treemodel, objectProgram, tree, wv, proj,
 					x/4,-getHeightWrapping(tilemap, x,y) - 0.3 ,y/4,0,0,0);
-				//fprintf(stderr, "Object Added: %d %d :: %.3f", x,y ,random);
+	
+				}
+				else 
+				{
+					obj = WorldObject_New(stonemodel, objectProgram, stone, wv, proj,
+					x/4,-getHeightWrapping(tilemap, x,y) - 0.5 ,y/4,0,0,0);
+				
+				}
+				
+				//Hardcoded map scale
+				 //fprintf(stderr, "Object Added: %d %d :: %.3f", x,y ,random);
 				objects[objectCounter] = obj;	
 				objectCounter++;
 				if(objectCounter >= MAX_OBJECTS) return;
