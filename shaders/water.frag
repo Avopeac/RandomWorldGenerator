@@ -60,7 +60,7 @@ void main(void)
 
 	vec4 waterColor = vec4(0, 0.1, 0.115, 0.7);
 	waterColor = waterColor * facing;
-	reflection = fresnelFac * reflection;
+	reflection = 0.5 * fresnelFac * reflection;
 
 	float diffuseAngle = max(0.0, dot(reflNormal, cameraVector));
 	float kd = 0.5 * diffuseAngle;
