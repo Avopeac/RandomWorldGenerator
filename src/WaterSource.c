@@ -92,24 +92,24 @@ void UpdateWaterSource(WaterSource* source)
 
 WaterSource** GenerateWaterSources(Model* terrainModel, float level)
 {
-	int i, j, c, size;
+	int c, size;
 	float l1, l2, l3, a1, a2, a3, s1, s2, s3;
 	vec3 d1, d2, d3;
 	
 	size = getTilemap()->size;
-	sources = (WaterSource*)malloc(sizeof(WaterSource) * size * size);
+	sources = (WaterSource*)malloc(sizeof(WaterSource) * 1);
 
-	l1 = GetRndScaledNum(20); l2 = GetRndScaledNum(20); l3 = GetRndScaledNum(20);
-	a1 = GetRndScaledNum(0.05); a2 = GetRndScaledNum(0.05); a3 = GetRndScaledNum(0.05);
-	s1 = GetRndScaledNum(1); s2 = GetRndScaledNum(1); s3 = GetRndScaledNum(1);
+	l1 = GetRndScaledNum(20.0f); l2 = GetRndScaledNum(20.0f); l3 = GetRndScaledNum(20.0f);
+	a1 = GetRndScaledNum(0.05f); a2 = GetRndScaledNum(0.05f); a3 = GetRndScaledNum(0.05f);
+	s1 = GetRndScaledNum(1.0f); s2 = GetRndScaledNum(1.0f); s3 = GetRndScaledNum(1.0f);
 
-	d1 = SetVector(GetRndScaledNum(-1), 0, GetRndScaledNum(1));
-	d2 = SetVector(GetRndScaledNum(1), 0, GetRndScaledNum(-1));
-	d3 = SetVector(GetRndScaledNum(1), 0, GetRndScaledNum(1));
+	d1 = SetVector(GetRndScaledNum(-1.0f), 0, GetRndScaledNum(1.0f));
+	d2 = SetVector(GetRndScaledNum(1.0f), 0, GetRndScaledNum(-1.0f));
+	d3 = SetVector(GetRndScaledNum(1.0f), 0, GetRndScaledNum(1.0f));
 
 	c = 0;
 
-	sources[c++] = *GenerateWaterSource(SetVector(i, level, j), 1000, 1000, l1, l2, l3, a1, a2, a3, s1, s2, s3, d1, d2, d3, terrainModel);
+	sources[c++] = *GenerateWaterSource(SetVector(0, level, 0), size, size, l1, l2, l3, a1, a2, a3, s1, s2, s3, d1, d2, d3, terrainModel);
 
 	nFills = c;
 
@@ -120,8 +120,6 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 {
 	WaterSource* source;
 	Model* tempModel;
-
-	float tessFact = 10.0f;
 
 	unsigned int vertexCount = sx * sz;
 	unsigned int triangleCount = (sx - 1) * (sz - 1) * 2;
@@ -148,9 +146,9 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 				depth = -100.0f;
 			}
 			
-			vertexArray[(x + z * sx)*3 + 0] = (GLfloat)x / tessFact;
+			vertexArray[(x + z * sx)*3 + 0] = (GLfloat)x / GetTerrainScale();
 			vertexArray[(x + z * sx)*3 + 1] = (GLfloat) depth;
-			vertexArray[(x + z * sx)*3 + 2] = (GLfloat)z / tessFact;
+			vertexArray[(x + z * sx)*3 + 2] = (GLfloat)z / GetTerrainScale();
 
 			texCoordArray[(x + z * sx)*2 + 0] = (GLfloat)x;
 			texCoordArray[(x + z * sx)*2 + 1] = (GLfloat)z;
@@ -228,7 +226,7 @@ void DrawWaterSources(WaterSource** sources, vec3 sun, CameraData* cam, GLuint r
 void DrawWaterSource(WaterSource *source, vec3 sun, CameraData* cam, GLuint reflection)
 {
 
-	float divTime = (*dt) * 0.001;
+	float divTime = (*dt) * 0.001f;
 
 	mat4 tempModelWorld, tempWorldView;
 
@@ -244,7 +242,7 @@ void DrawWaterSource(WaterSource *source, vec3 sun, CameraData* cam, GLuint refl
 
 	updateTime += *dt;
 
-	if (updateTime > 1000.0f)
+	if (updateTime > 10000.0f)
 	{
 		UpdateWaterSource(source);
 		updateTime = 0;

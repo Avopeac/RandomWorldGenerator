@@ -29,22 +29,22 @@ void main(void)
 
 	mat3 MWIT = transpose(inverse(mat3(modelToWorld)));
 	mat3 MW3 = mat3(modelToWorld);
-	mat3 WV3 = mat3(worldToView);
+//	mat3 WV3 = mat3(worldToView);
 	
 	vec3 lightPosition = normalize(solarPosition);
 	vec3 surfacePosition = normalize(MW3 * position);
 
-	vec3 surfaceNormal = -1.0 * normalize(MWIT * normal);
-	vec3 surfaceBinormal = -1.0 * normalize(MWIT * binormal);
-	vec3 surfaceTangent = -1.0 * normalize(MWIT * tangent);
+	vec3 surfaceNormal = normalize(MWIT * normal);
+	vec3 surfaceBinormal = normalize(MWIT * binormal);
+	vec3 surfaceTangent = normalize(MWIT * tangent);
 	mat3 TBN = mat3(surfaceTangent, surfaceBinormal, surfaceNormal);
 
-	vec3 bumpNormalA = texture(tex, texCoord / 100).xyz;
-	vec3 bumpNormalB = texture(tex, texCoord / 24).xyz;
-	vec3 bumpNormalC = texture(tex, texCoord / 12).xyz;
-	vec3 bumpNormalD = texture(tex, texCoord / 2).xyz;
+	vec3 bumpNormalA = texture(tex, texCoord * 0.01).xyz;
+	vec3 bumpNormalB = texture(tex, texCoord * 0.04).xyz;
+	vec3 bumpNormalC = texture(tex, texCoord * 0.08).xyz;
+	vec3 bumpNormalD = texture(tex, texCoord * 0.50).xyz;
 
-	vec3 bumpNormal = 2.0 * ((bumpNormalA + bumpNormalB + bumpNormalC + bumpNormalD) * 0.25) - vec3(1,1,1);
+	vec3 bumpNormal = 0.5 * (bumpNormalA + bumpNormalB + bumpNormalC + bumpNormalD) - vec3(1);
 	bumpNormal = normalize(TBN * bumpNormal);
 
 	vec3 surfaceVector = normalize(lightPosition - surfacePosition);
@@ -66,12 +66,10 @@ void main(void)
 	reflection = fresnelFac * reflection;
 
 	float diffuseAngle = max(0.0, dot(bumpNormal, cameraVector));
-	float kd = diffuseAngle;
-	vec4 diffuseColor = kd * vec4(0.0, 0.7, 0.8, 1.0);
+	vec4 diffuseColor = diffuseAngle * vec4(0.0, 0.25, 0.30, 1.0);
 
 	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
-	float ks = specularAngle;
-	vec4 specularColor = ks * vec4(1, 1, 1, 1) * pow(specularAngle, 12);
+	vec4 specularColor = vec4(1) * pow(specularAngle, 12);
 
-	outColor = waterColor + reflection + specularColor + diffuseColor;
+	outColor = vec4(vec4(waterColor + reflection + specularColor + diffuseColor).xyz, 0.8);
 }

@@ -38,9 +38,9 @@ float freq(float wavelength, float depth)
 }
 
 //Calculate the phase shift of a wave for some speed and wavelength.
-float phase(float speed, float wavelength)
+float phase(float speed, float freq)
 {
-	return speed * 2.0 * 3.14159265358979323846 / wavelength;
+	return speed * freq;
 }
 
 //Calculate the wave curve steepness, high values may cause loops at top.
@@ -72,27 +72,19 @@ void main(void)
 	const float hd = 0.0002;
 
 	//Wave dispersions with respect to depth to terrain (stored in y-coordinate)
-	vec3 W = vec3(freq(l1, -inPosition.y),
-	 freq(l2, -inPosition.y),
-	 freq(l3, -inPosition.y));
+	vec3 W = vec3(freq(l1, -inPosition.y), freq(l2, -inPosition.y), freq(l3, -inPosition.y));
 
 	//Wave phase
-	vec3 PHI = vec3(phase(s1, l1),
-	 phase(s2, l2),
-	  phase(s3, l3));
+	vec3 PHI = vec3(phase(s1, W[0]), phase(s2, W[1]), phase(s3, W[2]));
 
 	//Wave amplitude
-	vec3 A = vec3(amplitude(a1, a1s, a1f),
-	 amplitude(a2, a2s, a2f),
-	  amplitude(a3, a3s, a3f));
+	vec3 A = vec3(amplitude(a1, a1s, a1f), amplitude(a2, a2s, a2f), amplitude(a3, a3s, a3f));
 
 	//Wave directions
 	mat3 D = mat3(d1, d2, d3);
 
 	//Wave steepness
-	vec3 Q = vec3(steepness(W[0], A[0]),
-	 steepness(W[1], A[1]),
-	  steepness(W[2], A[2]));
+	vec3 Q = vec3(steepness(W[0], A[0]), steepness(W[1], A[1]), steepness(W[2], A[2]));
 
 	//Wave height displacement
 	float y = displacement(inPosition.y, hd, rand(inPosition.xz));
@@ -100,9 +92,14 @@ void main(void)
 	vec3 P = vec3(inPosition.x, y, inPosition.z);
 	for (int i = 0; i < 3; i++)
 	{
-		P.x += Q[i] * A[i] * D[i].x * cos(W[i] * dot(D[i], P) + PHI[i] * time);
-		P.z += Q[i] * A[i] * D[i].z * cos(W[i] * dot(D[i], P) + PHI[i] * time);
-		P.y += A[i] * sin(W[i] * dot(D[i], P) + PHI[i] * time);
+		float QA = Q[i] * A[i];
+		float pArg = W[i] * dot(D[i], P) + PHI[i] * time;
+		float C = cos(pArg);
+		float S = sin(pArg);
+
+		P.x += QA * D[i].x * C;
+		P.z += QA * D[i].z * C;
+		P.y += A[i] * S;
 	}
 
 	//WA for counting normals
@@ -117,12 +114,13 @@ void main(void)
 		float WA = W[i] * A[i];
 		float S = sin(W[i] * dot(D[i], P) + PHI[i] * time);
 		float C = cos(W[i] * dot(D[i], P) + PHI[i] * time);
+		float arg = Q[i] * D[i].x * D[i].z * WA * S;
 
 		B.x += Q[i] * pow(D[i].x, 2) * WA * S;
-		B.z += Q[i] * D[i].x * D[i].z * WA * S;
+		B.z += arg;
 		B.y += D[i].x * WA * C;
 
-		T.x += Q[i] * D[i].x * D[i].z * WA * S;
+		T.x += arg;
 		T.z += Q[i] * pow(D[i].z, 2) * WA * S;
 		T.y += D[i].z * WA * C;
 
@@ -141,10 +139,9 @@ void main(void)
 	N.z = -1.0 * N.z;
 	N.y = 1.0 - N.y;
 	
-	normal = vec3(N.x, -N.y, N.z);
-	binormal = vec3(B.x, -B.y, B.z);
-	tangent = vec3(T.x, -T.y, T.z);
-
+	normal = N;
+	binormal = B;
+	tangent = T;
 	depth = -inPosition.y;
 	position = P;
 	texCoord = inTexCoord;
