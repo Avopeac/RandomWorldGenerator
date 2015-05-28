@@ -40,3 +40,5 @@
 #define MODEL_FOLDER "models/"
 #define SKYDOME_MODEL "models/skydome.obj"
 #define SKYDOME_2_MODEL "models/skydome2.obj"
+#define NEW_TREE_MODEL "models/newtree.obj"
+#define STONE_MODEL "models/stone.obj"

@@ -285,7 +285,7 @@ void UpdateSolarPosition(float hours)
 
 	//For debug.
 	//PrintSolarData();
-	fprintf(stderr, "calc x %f y %f z %f\n", x, y, z);
+	//fprintf(stderr, "calc x %f y %f z %f\n", x, y, z);
 }
 
 void SetDate(int year, int month, int day)

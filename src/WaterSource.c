@@ -6,6 +6,8 @@
 #include "LoadTGA.h"
 #include <stdlib.h>
 #include <time.h>
+#include "FloodFiller.h"
+#include "HeightMapTerrain.h"
 
 GLuint waterProgram;
 
@@ -17,7 +19,22 @@ mat4 *wv;
 mat4 *proj;
 GLuint waterTex;
 
-WaterSource** sources;
+WaterSource* sources;
+
+float updateTime = 0;
+
+//number of fills
+int nFills;
+
+typedef struct UpdateParams
+{
+	float l1, l2, l3;
+	float a1, a2, a3;
+	float s1, s2, s3;
+	vec3 d1, d2, d3;
+}UpdateParams;
+
+UpdateParams params;
 
 void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, mat4 *projectionMatrix)
 {
@@ -25,7 +42,7 @@ void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, 
 	mw = modelToWorld;
 	wv = worldToView;
 	proj = projectionMatrix;
-
+	
 	LoadTGATextureSimple(WATER_2_NORMAL, &waterTex);
 
 	waterProgram = loadShaders(WATER_VERT_SHADER, WATER_FRAG_SHADER);
@@ -33,6 +50,70 @@ void SetupWaterSources(float *deltaTime, mat4 *modelToWorld, mat4 *worldToView, 
 	glUniform1i(glGetUniformLocation(waterProgram, "refl"), 0);
 	glUniform1i(glGetUniformLocation(waterProgram, "tex"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(waterProgram, "projMatrix"), 1, GL_TRUE, proj->m);
+
+	//New random seed
+	srand(time(NULL));
+}
+
+float GetRndScaledNum(float scale)
+{
+	return scale * (rand() % RAND_MAX) / RAND_MAX;
+}
+
+void UpdateWaterSource(WaterSource* source)
+{
+	float l1, l2, l3, a1, a2, a3, s1, s2, s3;
+	vec3 d1, d2, d3;
+
+	l1 = GetRndScaledNum(20); l2 = GetRndScaledNum(20); l3 = GetRndScaledNum(20);
+	a1 = GetRndScaledNum(0.05); a2 = GetRndScaledNum(0.05); a3 = GetRndScaledNum(0.05);
+	s1 = GetRndScaledNum(2); s2 = GetRndScaledNum(2); s3 = GetRndScaledNum(2);
+
+	d1 = SetVector(GetRndScaledNum(-1), 0, GetRndScaledNum(1));
+	d2 = SetVector(GetRndScaledNum(1), 0, GetRndScaledNum(-1));
+	d3 = SetVector(GetRndScaledNum(1), 0, GetRndScaledNum(1));
+
+	params.l1 = l1;
+	params.l2 = l2;
+	params.l3 = l3;
+
+	params.a1 = a1;
+	params.a2 = a2;
+	params.a3 = a3;
+
+	params.s1 = s1;
+	params.s2 = s2;
+	params.s3 = s3;
+
+	params.d1 = d1;
+	params.d2 = d2;
+	params.d3 = d3;
+}
+
+WaterSource** GenerateWaterSources(Model* terrainModel, float level)
+{
+	int i, j, c, size;
+	float l1, l2, l3, a1, a2, a3, s1, s2, s3;
+	vec3 d1, d2, d3;
+	
+	size = getTilemap()->size;
+	sources = (WaterSource*)malloc(sizeof(WaterSource) * size * size);
+
+	l1 = GetRndScaledNum(20); l2 = GetRndScaledNum(20); l3 = GetRndScaledNum(20);
+	a1 = GetRndScaledNum(0.05); a2 = GetRndScaledNum(0.05); a3 = GetRndScaledNum(0.05);
+	s1 = GetRndScaledNum(1); s2 = GetRndScaledNum(1); s3 = GetRndScaledNum(1);
+
+	d1 = SetVector(GetRndScaledNum(-1), 0, GetRndScaledNum(1));
+	d2 = SetVector(GetRndScaledNum(1), 0, GetRndScaledNum(-1));
+	d3 = SetVector(GetRndScaledNum(1), 0, GetRndScaledNum(1));
+
+	c = 0;
+
+	sources[c++] = *GenerateWaterSource(SetVector(i, level, j), 1000, 1000, l1, l2, l3, a1, a2, a3, s1, s2, s3, d1, d2, d3, terrainModel);
+
+	nFills = c;
+
+	return &sources;
 }
 
 WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float l1, float l2, float l3, float a1, float a2, float a3, float s1, float s2, float s3, vec3 d1, vec3 d2, vec3 d3, Model* terrainModel)
@@ -125,7 +206,7 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	source->a3 = a3;
 
 	//Speeds
-	source->s1 = s1;
+	source->s1 = s1; 
 	source->s2 = s2;
 	source->s3 = s3;
 
@@ -137,19 +218,19 @@ WaterSource* GenerateWaterSource(vec3 p, unsigned int sx, unsigned int sz, float
 	return source;
 }
 
+void DrawWaterSources(WaterSource** sources, vec3 sun, CameraData* cam, GLuint reflection)
+{
+	int i;
+	for (i = 0; i < nFills; ++i)
+		DrawWaterSource(sources[i], sun, cam, reflection);
+}
+
 void DrawWaterSource(WaterSource *source, vec3 sun, CameraData* cam, GLuint reflection)
 {
 
+	float divTime = (*dt) * 0.001;
+
 	mat4 tempModelWorld, tempWorldView;
-
-	float dot;
-	vec3 distanceFromCam = VectorSub(SetVector(source->p.x, source->p.y, source->p.z  + source->sz / 2.0f), cam->pos);
-
-	//Check if distance is too large
-	distanceFromCam = Normalize(distanceFromCam);
-	//Check is in from of cam
-	dot = DotProduct(distanceFromCam, Normalize(GetCamForward()));
-	if( dot > 0.5) return;
 
 	glUseProgram(waterProgram);
 
@@ -160,6 +241,30 @@ void DrawWaterSource(WaterSource *source, vec3 sun, CameraData* cam, GLuint refl
 	glBindTexture(GL_TEXTURE_2D, waterTex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	updateTime += *dt;
+
+	if (updateTime > 1000.0f)
+	{
+		UpdateWaterSource(source);
+		updateTime = 0;
+	}
+
+	source->l1 += (params.l1 - source->l1) * 0.0001f;
+	source->l2 += (params.l2 - source->l2) * 0.0001f;
+	source->l3 += (params.l3 - source->l3) * 0.0001f;
+	
+	source->a1 += (params.a1 - source->a1) * 0.0001f;
+	source->a2 += (params.a2 - source->a2) * 0.0001f;
+	source->a3 += (params.a3 - source->a3) * 0.0001f;
+	
+	source->s1 += (params.s1 - source->s1) * 0.0001f;
+	source->s2 += (params.s2 - source->s2) * 0.0001f;
+	source->s3 += (params.s3 - source->s3) * 0.0001f;
+
+	VectorAdd(source->d1, ScalarMult(VectorSub(params.d1, source->d1), 0.0001f)); 
+	VectorAdd(source->d2, ScalarMult(VectorSub(params.d2, source->d2), 0.0001f));
+	VectorAdd(source->d3, ScalarMult(VectorSub(params.d3, source->d3), 0.0001f));
 
 	tempModelWorld = *mw;
 	tempWorldView = *wv; 
@@ -188,7 +293,7 @@ void DrawWaterSource(WaterSource *source, vec3 sun, CameraData* cam, GLuint refl
 	glUniform3fv(glGetUniformLocation(waterProgram, "cameraPosition"), 1, &(cam->pos.x));
 
 	//Add time
-	source->time += (*dt) / 1000.0f;
+	source->time += divTime;
 	glUniform1f(glGetUniformLocation(waterProgram, "time"), source->time);
 
 	DrawModel(source->water, waterProgram, "inPosition", "inNormal", NULL, NULL, "inTexCoord", NULL);

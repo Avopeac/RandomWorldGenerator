@@ -33,8 +33,7 @@ GLfloat deltaTime;
 
 FBOData *rt;
 
-//This will be removed later and generated procedurally
-WaterSource* water;
+WaterSource** water;
 
 void init(void)
 {
@@ -72,16 +71,8 @@ void init(void)
 
 	//Set up a water source
 	SetupWaterSources(&deltaTime, &modelView, &camMatrix, &projectionMatrix);
-	water = GenerateWaterSource(
-		SetVector(20, -6.5f, 20),
-		240, 240,
-		5.0f, 4.0f, 20.0f,
-		0.05f, 0.02f, 0.03f,
-		0.2f, -1.5f, 2.5f,
-		SetVector(1,0,1), SetVector(-1,0,-1), SetVector(1, 0, -1),
-		GetTerrainModel());
 
-	
+	water = GenerateWaterSources(GetTerrainModel(), -6.5f);
 }
 
 void display(void)
@@ -124,7 +115,7 @@ void display(void)
 	
 	DrawDayNightCycle();
 	DrawHeightMapTerrain(sData.position);
-	DrawWaterSource(water, sData.position, &camData, rt->color);
+	DrawWaterSources(water, sData.position, &camData, rt->color);
 	DrawObjectManager(sData.position, camData);
 
 	printError("display 2");

@@ -105,8 +105,8 @@ void GenerateObjects()
 	WorldObject * obj = (WorldObject*)malloc(sizeof(WorldObject));
 
 
-	treemodel = LoadModelPlus("models/newtree.obj");
-	stonemodel = LoadModelPlus("models/stone.obj");
+	treemodel = LoadModelPlus(NEW_TREE_MODEL);
+	stonemodel = LoadModelPlus(STONE_MODEL);
 	tilemap = getTilemap();
 
 	//Init RNG

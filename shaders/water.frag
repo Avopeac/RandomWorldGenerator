@@ -30,45 +30,48 @@ void main(void)
 	mat3 MWIT = transpose(inverse(mat3(modelToWorld)));
 	mat3 MW3 = mat3(modelToWorld);
 	mat3 WV3 = mat3(worldToView);
-	mat3 NM = MWIT;
 	
 	vec3 lightPosition = normalize(solarPosition);
 	vec3 surfacePosition = normalize(MW3 * position);
 
-	vec3 surfaceNormal = normalize(NM * normal);
-	vec3 surfaceBinormal = normalize(NM * binormal);
-	vec3 surfaceTangent = normalize(NM * tangent);
+	vec3 surfaceNormal = -1.0 * normalize(MWIT * normal);
+	vec3 surfaceBinormal = -1.0 * normalize(MWIT * binormal);
+	vec3 surfaceTangent = -1.0 * normalize(MWIT * tangent);
 	mat3 TBN = mat3(surfaceTangent, surfaceBinormal, surfaceNormal);
 
-	vec3 bumpNormal = texture(tex, texCoord / 10.0).xyz;
-	bumpNormal = 2.0 * bumpNormal - vec3(1,1,1);
-	bumpNormal = TBN * bumpNormal;
+	vec3 bumpNormalA = texture(tex, texCoord / 100).xyz;
+	vec3 bumpNormalB = texture(tex, texCoord / 24).xyz;
+	vec3 bumpNormalC = texture(tex, texCoord / 12).xyz;
+	vec3 bumpNormalD = texture(tex, texCoord / 2).xyz;
+
+	vec3 bumpNormal = 2.0 * ((bumpNormalA + bumpNormalB + bumpNormalC + bumpNormalD) * 0.25) - vec3(1,1,1);
+	bumpNormal = normalize(TBN * bumpNormal);
 
 	vec3 surfaceVector = normalize(lightPosition - surfacePosition);
 	vec3 reflectVector = normalize(2 * bumpNormal * dot(surfaceVector, bumpNormal) - surfaceVector);
 	vec3 cameraVector = normalize(-surfacePosition);
 
-	vec3 reflNormal = bumpNormal * vec3(0.03, 0.03, 1.0);
+	vec3 reflNormal = bumpNormal * vec3(0.05, 0.05, 0.05);
 
 	vec4 screenPos = normalize(worldToView * modelToWorld * vec4(position, 1));
 	vec2 reflProjUV = vec2(0.5, 0.5) - vec2(screenPos.x, -screenPos.y);
 	vec4 reflection = texture(refl, reflProjUV + reflNormal.xy); 
 
-	float ndotl = max(dot(surfaceVector, reflNormal), 0);
+	float ndotl = max(dot(surfaceVector, bumpNormal), 0);
 	float facing = 1.0 - ndotl;
-	float fresnelFac = fresnel(facing, 0.2, 2.0);
+	float fresnelFac = fresnel(facing, 0.9, 2.0);
 
-	vec4 waterColor = vec4(0, 0.1, 0.115, 0.7);
+	vec4 waterColor = vec4(0, 0.14, 0.115, 1.0);
 	waterColor = waterColor * facing;
-	reflection = 0.5 * fresnelFac * reflection;
+	reflection = fresnelFac * reflection;
 
-	float diffuseAngle = max(0.0, dot(reflNormal, cameraVector));
-	float kd = 0.5 * diffuseAngle;
-	vec4 diffuseColor = kd * vec4(0.6, 0.7, 0.8, 1.0);
+	float diffuseAngle = max(0.0, dot(bumpNormal, cameraVector));
+	float kd = diffuseAngle;
+	vec4 diffuseColor = kd * vec4(0.0, 0.7, 0.8, 1.0);
 
 	float specularAngle = max(0.0, dot(reflectVector, cameraVector));
-	float ks = 0.4 * specularAngle;
-	vec4 specularColor = ks * vec4(1, 1, 1, 1) * pow(specularAngle, 32);
+	float ks = specularAngle;
+	vec4 specularColor = ks * vec4(1, 1, 1, 1) * pow(specularAngle, 12);
 
 	outColor = waterColor + reflection + specularColor + diffuseColor;
 }
